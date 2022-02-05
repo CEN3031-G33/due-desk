@@ -1,0 +1,71 @@
+name: pipeline
+on: [push]
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+    matrix:
+      os: [ubuntu-latest, macos-latest, windows-latest]
+      python-version: ['3.6', '3.x'] # 3.6 is minimum supported version
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Fetch repository
+        uses: actions/checkout@v2
+
+      - name: Setup python ${{ matrix.python-version }}
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Run unit tests
+        run: python -m unittest discover due_desk -v -p "*.py"
+
+      - name: Run integration tests
+        run: python -m unittest discover tests -v -p "main.py"
+
+  deploy:
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch repository
+        uses: actions/checkout@v2
+
+      - name: Setup python
+        with:
+          python-version: '3.x'
+
+      - name: Package DueDesk
+        run: python setup.py sdist
+
+      - name: Update version number from tag reference
+        if: ${{ github.ref_type == 'tag' }}
+        run: |
+          echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+          echo "__version__ = \"$RELEASE_VERSION\"" > ./src/due_desk/__version__.py
+
+      - name: Upload DueDesk python package as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: DueDesk
+          path: dist/**.tar.gz
+
+  release:
+    needs: [deploy]
+    if: ${{ github.ref_type == 'tag' }} #only release on tagged versions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch Repository
+        uses: actions/checkout@v2
+
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+
+      - name: Display structure of downloaded files
+        run: ls -R
+      
+      - name: Release DueDesk python package
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: './**.tar.gz'
+          bodyFile: CHANGELOG.md
+          token: ${{ secrets.GITHUB_TOKEN }}

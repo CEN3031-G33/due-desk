@@ -1,0 +1,11 @@
+#ignore distributed packages
+dist/
+
+#ignore cached python dependencies
+__pycache__/
+
+#ignore manual builds
+*.egg-info
+
+#ignore mac-os metadata
+.DS_Store
