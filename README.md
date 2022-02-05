@@ -1,10 +1,26 @@
 # Due Desk
 
-## The virtual space that helps you get assignments done in a fun and rewarding way.
-
 ## Overview
 
-<br>
+The virtual space that helps you get assignments done in a fun and rewarding way.
+
+## Using
+
+1. Grab the latest release file. Download it to your local machine.
+
+2. Decompress the tarball (.tar.gz) and open the terminal at the new folder.
+
+3. Install DueDesk through pip.
+
+```
+$ pip install .
+```
+
+4. Verify DueDesk installed properly.
+
+```
+$ duedesk
+```
 
 ## Contributing
 
