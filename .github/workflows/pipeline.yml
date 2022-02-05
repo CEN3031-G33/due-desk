@@ -5,9 +5,9 @@ jobs:
   test:
     strategy:
       fail-fast: false
-    matrix:
-      os: [ubuntu-latest, macos-latest, windows-latest]
-      python-version: ['3.6', '3.x'] # 3.6 is minimum supported version
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ['3.6', '3.x'] # 3.6 is minimum supported version
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Fetch repository
