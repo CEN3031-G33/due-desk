@@ -1,4 +1,5 @@
-# Due Desk
+# Due Desk 
+# ![desk](./docs/images/superdesk.png)
 
 ## Overview
 
@@ -28,12 +29,13 @@ $ duedesk
 
 ```
 $ git clone https://github.com/CEN3031-G33/due-desk.git 
+$ cd ./due-desk
 ```
 
 2. Build the development version.
 
 ```
-$ pip install -e ./due-desk
+$ pip install -e .
 ```
 
 3. Run unit tests locally.
