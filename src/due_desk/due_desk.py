@@ -8,11 +8,13 @@
 
 import unittest
 
+import os
 import sys
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
+root_dir = os.path.realpath(os.path.join(os.path.dirname(__file__), '../..'))
 
 def window():
     '''
@@ -23,8 +25,14 @@ def window():
     w = QWidget()
     b = QLabel(w)
     b.setText("Welcome to your DueDesk!")
-    w.setGeometry(100,100,200,50)
-    b.move(50,20)
+    b.setStyleSheet(" font-size: 20px; font-family: Helvetica;")
+    b.move(180,5)
+    c = QLabel(w)
+    img_path = root_dir + "\\resources\desk.jpg"
+    c_pixmap = QPixmap(img_path)
+    c.setPixmap(c_pixmap)
+    w.resize(c_pixmap.width(), c_pixmap.height())
+    b.raise_()
     w.setWindowTitle("Due Desk")
     w.show()
     sys.exit(app.exec_())
