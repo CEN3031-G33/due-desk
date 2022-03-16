@@ -52,8 +52,10 @@ class Deadline:
     # :todo: test and implement
     def is_valid(self) -> bool:
         '''Checks if the current date is valid. Invalid dates are signified
-        as `year = month = day = 0`.'''
-        return False
+        with the caught position set to 0.'''
+        return self.get_day() != 0 and \
+            self.get_month() != 0 and \
+            self.get_year() != 0
 
 
     # :todo: test and implement
@@ -181,5 +183,24 @@ class TestDeadline(unittest.TestCase):
 
         d = Deadline.from_str('3.14')
         self.assertEqual(d.days_out(), d.get_day() - date.today().day)
+        pass
+
+
+    def test_is_valid(self):
+        # invalid everything
+        d = Deadline(0, 0, 0)
+        self.assertFalse(d.is_valid())
+        # invalid year
+        d = Deadline(0, 12, 1)
+        self.assertFalse(d.is_valid())
+        # invalid month
+        d = Deadline(2022, 0, 1)
+        self.assertFalse(d.is_valid())
+        # invalid day
+        d = Deadline(2022, 4, 0)
+        self.assertFalse(d.is_valid())
+        # valid deadline
+        d = Deadline(2022, 1, 1)
+        self.assertTrue(d.is_valid())
         pass
     pass
