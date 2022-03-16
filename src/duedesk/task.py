@@ -17,18 +17,17 @@ class Task:
         pass
 
 
-    def to_json(self) -> str:
-        '''Converts `Task` object into json-compatible str.'''
+    def to_dict(self) -> dict:
+        '''Converts `Task` object into json-compatible `dict`.'''
         data = {
             'subject': self._subject,
             'deadline': str(self._deadline)
         }
-        str_ = json.dumps(data)
-        return str_
+        return data
 
 
     @classmethod
-    def from_json(cls, data: dict):
+    def from_dict(cls, data: dict):
         '''Converts a python dictionary loaded from json into a `Task` object.'''
         t = Task('', '')
         for (k, v) in data.items():
@@ -89,20 +88,20 @@ class TestTask(unittest.TestCase):
         pass
 
 
-    def test_to_json(self):
+    def test_to_dict(self):
         t = Task('write a book', Deadline(2022, 1, 1))
-        self.assertEqual(t.to_json(), 
-        '{"subject": "write a book", "deadline": "2022-01-01"}')
+        self.assertEqual(t.to_dict(), 
+        {"subject": "write a book", "deadline": "2022-01-01"})
         pass
 
     
-    def test_from_json(self):
+    def test_from_dict(self):
         data = {
             "subject": "write a book",
             "deadline": "2022-01-01",
         }
         t = Task('write a book', Deadline(2022, 1, 1))
-        self.assertTrue(Task.from_json(data).partial_eq(t))
+        self.assertTrue(Task.from_dict(data).partial_eq(t))
         pass
 
 
