@@ -9,7 +9,7 @@ import unittest
 import json
 
 class Task:
-    def __init__(self, subject, deadline) -> None:
+    def __init__(self, subject: str, deadline: str) -> None:
         '''Creates a new `Task` object.'''
         self._subject = subject
         # :todo: use deadline class here
@@ -53,11 +53,11 @@ class Task:
         return self._deadline
 
 
-    def set_subject(self, s) -> None:
+    def set_subject(self, s: str) -> None:
         self._subject = s
 
 
-    def set_deadline(self, d) -> None:
+    def set_deadline(self, d: str) -> None:
         self._deadline = d
 
 
