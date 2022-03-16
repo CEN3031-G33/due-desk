@@ -18,6 +18,9 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Local install project
+        run: pip install -e .
+
       - name: Run unit tests
         run: python -m unittest discover duedesk -v -p "*.py"
 
