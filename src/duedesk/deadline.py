@@ -98,7 +98,12 @@ class Deadline:
 
 
     def __lt__(self, o) -> bool:
-        return not (self > o)
+        if self.get_year() != o.get_year():
+            return self.get_year() < o.get_year()
+        elif self.get_month() != o.get_month():
+            return self.get_month() < o.get_month()
+        else:
+            return self.get_day() < o.get_day()
 
 
     def __eq__(self, o) -> bool:
@@ -169,6 +174,7 @@ class TestDeadline(unittest.TestCase):
         self.assertEqual(Deadline.from_str('abc/04/02').is_valid(), False)
         self.assertEqual(Deadline.from_str('-4').is_valid(), False)
         self.assertEqual(Deadline.from_str('2022/04.02').is_valid(), False)
+        self.assertEqual(Deadline.from_str(''), Deadline(date.today().year, date.today().month, 0))
         # month out of range cases
         self.assertEqual(Deadline.from_str('2022/13/02').is_valid(), False)
         # days out of range cases
@@ -216,35 +222,43 @@ class TestDeadline(unittest.TestCase):
 
 
     def test_cmp(self):
+        # equal deadlines
         d0 = Deadline(2022, 1, 2)
         d1 = Deadline(2022, 1, 2)
         self.assertEqual(d0, d1)
+        self.assertFalse(d0 != d1)
 
         self.assertFalse(d0 > d1)
         self.assertFalse(d1 > d0)
+        self.assertFalse(d1 < d0)
+        self.assertFalse(d0 < d1)
 
-        d2 = Deadline(2023, 1, 2)
-        self.assertNotEqual(d2, d1)
-        self.assertTrue(d2 > d1)
-        self.assertFalse(d1 > d2)
+        # future year
+        d0 = Deadline(2023, 1, 2)
+        self.assertNotEqual(d0, d1)
+        self.assertFalse(d0 < d1)
+        self.assertFalse(d1 > d0)
 
-        self.assertTrue(d1 < d2)
-        self.assertFalse(d2 < d1)
+        self.assertTrue(d1 < d0)
+        self.assertTrue(d0 > d1)
 
-        d2 = Deadline(2022, 2, 2)
-        self.assertNotEqual(d2, d1)
-        self.assertTrue(d2 > d1)
-        self.assertFalse(d1 > d2)
+        # future month
+        d0 = Deadline(2022, 2, 2)
+        self.assertNotEqual(d0, d1)
+        self.assertFalse(d1 > d0)
+        self.assertFalse(d0 < d1)
 
-        self.assertTrue(d1 < d2)
-        self.assertFalse(d2 < d1)
+        self.assertTrue(d0 > d1)
+        self.assertTrue(d1 < d0)
 
-        d2 = Deadline(2022, 1, 3)
-        self.assertNotEqual(d2, d1)
-        self.assertTrue(d2 > d1)
-        self.assertFalse(d1 > d2)
+        # future day
+        d0 = Deadline(2022, 1, 3)
+        self.assertNotEqual(d0, d1)
+        self.assertFalse(d1 > d0)
+        self.assertFalse(d0 < d1)
 
-        self.assertTrue(d1 < d2)
-        self.assertFalse(d2 < d1)
+        self.assertTrue(d0 > d1)
+        self.assertTrue(d1 < d0)
+
         pass
     pass
