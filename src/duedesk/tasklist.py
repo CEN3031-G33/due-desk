@@ -17,23 +17,23 @@ class Tasklist:
         '''Creates a `Tasklist` object.'''
         self._inner = inner
         pass
+    
+    
+    # :todo: test and impl
+    def add(self, t: Task) -> bool:
+        '''Adds a new `Task` to the list. Returns `false` if a task with the same
+        subject already exists.'''
+        return False
 
 
     @classmethod
     def from_dict(cls, data: dict):
-        '''Deserializes a python dictionary loaded from json into a `Tasklist` object.'''
+        '''Deserializes a `dict` loaded from json into a `Tasklist` object.'''
         tasks = []
         for v in data.values():
             tasks += [Task.from_dict(v)]
         tl = Tasklist(tasks)
         return tl
-
-    
-    def get_by_index(self, i: int) -> Task:
-        '''Access the `Task` at index `i`. Returns `None` if `i` is an invalid index.'''
-        if i >= len(self._inner) or i < 0:
-            return None
-        return self._inner[i]
 
 
     def to_dict(self) -> dict:
@@ -46,6 +46,13 @@ class Tasklist:
             data[str(i)] = t.to_dict()
             i += 1
         return data
+
+
+    def get_by_index(self, i: int) -> Task:
+        '''Access the `Task` at index `i`. Returns `None` if `i` is an invalid index.'''
+        if i >= len(self._inner) or i < 0:
+            return None
+        return self._inner[i]
 
 
     def __eq__(self, o) -> bool:

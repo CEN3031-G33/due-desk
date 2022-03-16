@@ -18,7 +18,7 @@ class Task:
 
 
     def to_dict(self) -> dict:
-        '''Converts `Task` object into json-compatible `dict`.'''
+        '''Serializes `Task` object into json-compatible `dict`.'''
         data = {
             'subject': self._subject,
             'deadline': str(self._deadline)
@@ -28,7 +28,7 @@ class Task:
 
     @classmethod
     def from_dict(cls, data: dict):
-        '''Converts a python dictionary loaded from json into a `Task` object.'''
+        '''Deserializes a `dict` loaded from json into a `Task` object.'''
         t = Task('', '')
         for (k, v) in data.items():
             if k == 'subject':

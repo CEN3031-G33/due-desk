@@ -21,6 +21,8 @@ class Deadline:
 
     @classmethod
     def from_str(cls, s: str):
+        '''Transforms a `str` into a `Deadline` object. Note: this method can
+        fail. To check if a valid `Deadline` was created, call `is_valid()`.'''
         d = Deadline(date.today().year, date.today().month, date.today().day)
         delims = ['-', '/', '.', '\\']
         sep = delims[0]
