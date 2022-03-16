@@ -8,6 +8,7 @@
 import unittest
 import json
 from datetime import date
+from calendar import monthrange
 
 # :wip:
 class Deadline:
@@ -23,7 +24,7 @@ class Deadline:
     def from_str(cls, s: str):
         d = Deadline(date.today().year, date.today().month, date.today().day)
         delims = ['-', '/', '.', '\\']
-        sep = None
+        sep = delims[0]
         # auto-detect the delimiter
         for c in s:
             if c in delims:
@@ -33,12 +34,31 @@ class Deadline:
         # work backward from day to year
         parts = s.split(sep)
         parts.reverse()
+        # too many parts
+        if len(parts) > 3:
+            return Deadline(0, 0, 0)
+        # accept days then months then years
         if len(parts) > 0:
-            d.set_day(int(parts[0]))
+            try:
+                d.set_day(int(parts[0]))
+            except:
+                d.set_day(0)
         if len(parts) > 1:
-            d.set_month(int(parts[1]))
+            try:
+                d.set_month(int(parts[1]))
+            except:
+                d.set_month(0)
         if len(parts) > 2:
-            d.set_year(int(parts[2]))
+            try:
+                d.set_year(int(parts[2]))
+            except:
+                d.set_year(0)
+        # verify month and day are within correct ranges
+        if d.get_month() > 12:
+            d.set_month(0)
+        if d.get_year() != 0 and d.get_month() != 0 and \
+            d.get_day() > monthrange(d.get_year(), d.get_month())[1]:
+            d.set_day(0)
         return d
 
 
@@ -68,7 +88,7 @@ class Deadline:
     # :todo: test and implement
     def __str__(self) -> str:
         '''Convert the `deadline` to a str.'''
-        return 'todo!'
+        return str(self.get_year())+'-'+str(self.get_month())+'-'+str(self.get_day())
 
 
     def __gt__(self, o) -> bool:
@@ -124,6 +144,10 @@ class Deadline:
 
     def set_day(self, d: int) -> None:
         self._day = d
+
+
+    def __repr__(self) -> str:
+        return str(id(self))+': '+str(self)
     pass
 
 
@@ -133,6 +157,53 @@ class TestDeadline(unittest.TestCase):
         self.assertEqual(d.get_day(), 2)
         self.assertEqual(d.get_month(), 1)
         self.assertEqual(d.get_year(), 2022)
+        pass
+
+
+    def test_from_str(self):
+        # valid cases
+        self.assertEqual(Deadline.from_str('2022-01-02'), Deadline(2022, 1, 2))
+        self.assertEqual(Deadline.from_str('2022/01/02'), Deadline(2022, 1, 2))
+        self.assertEqual(Deadline.from_str('01/02'), Deadline(2022, 1, 2))
+        # invalid formatting cases
+        self.assertEqual(Deadline.from_str('-2022/04/02').is_valid(), False)
+        self.assertEqual(Deadline.from_str('2022-04/02').is_valid(), False)
+        self.assertEqual(Deadline.from_str('abc/04/02').is_valid(), False)
+        self.assertEqual(Deadline.from_str('-4').is_valid(), False)
+        self.assertEqual(Deadline.from_str('2022/04.02').is_valid(), False)
+        # month out of range cases
+        self.assertEqual(Deadline.from_str('2022/13/02').is_valid(), False)
+        # days out of range cases
+        self.assertEqual(Deadline.from_str('2022/2/29').is_valid(), False)
+        self.assertEqual(Deadline.from_str('2022/5/32').is_valid(), False)
+        pass
+
+
+    def test_days_out(self):
+        d = Deadline.from_str('3.18')
+        self.assertEqual(d.days_out(), d.get_day() - date.today().day)
+
+        d = Deadline.from_str('3.14')
+        self.assertEqual(d.days_out(), d.get_day() - date.today().day)
+        pass
+
+
+    def test_is_valid(self):
+        # invalid everything
+        d = Deadline(0, 0, 0)
+        self.assertFalse(d.is_valid())
+        # invalid year
+        d = Deadline(0, 12, 1)
+        self.assertFalse(d.is_valid())
+        # invalid month
+        d = Deadline(2022, 0, 1)
+        self.assertFalse(d.is_valid())
+        # invalid day
+        d = Deadline(2022, 4, 0)
+        self.assertFalse(d.is_valid())
+        # valid deadline
+        d = Deadline(2022, 1, 1)
+        self.assertTrue(d.is_valid())
         pass
 
 
@@ -167,40 +238,5 @@ class TestDeadline(unittest.TestCase):
 
         self.assertTrue(d1 < d2)
         self.assertFalse(d2 < d1)
-        pass
-
-
-    def test_from_str(self):
-        self.assertEqual(Deadline.from_str('2022-01-02'), Deadline(2022, 1, 2))
-        self.assertEqual(Deadline.from_str('2022/01/02'), Deadline(2022, 1, 2))
-        self.assertEqual(Deadline.from_str('01/02'), Deadline(2022, 1, 2))
-        pass
-
-
-    def test_days_out(self):
-        d = Deadline.from_str('3.18')
-        self.assertEqual(d.days_out(), d.get_day() - date.today().day)
-
-        d = Deadline.from_str('3.14')
-        self.assertEqual(d.days_out(), d.get_day() - date.today().day)
-        pass
-
-
-    def test_is_valid(self):
-        # invalid everything
-        d = Deadline(0, 0, 0)
-        self.assertFalse(d.is_valid())
-        # invalid year
-        d = Deadline(0, 12, 1)
-        self.assertFalse(d.is_valid())
-        # invalid month
-        d = Deadline(2022, 0, 1)
-        self.assertFalse(d.is_valid())
-        # invalid day
-        d = Deadline(2022, 4, 0)
-        self.assertFalse(d.is_valid())
-        # valid deadline
-        d = Deadline(2022, 1, 1)
-        self.assertTrue(d.is_valid())
         pass
     pass
