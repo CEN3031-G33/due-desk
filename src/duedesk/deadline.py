@@ -45,6 +45,7 @@ class Deadline:
     def days_out(self) -> int:
         '''Computes how many days from today until deadline.'''
         result = self.get_day() - date.today().day
+        # :todo: take into account months and years in advance
         return result
 
 
