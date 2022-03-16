@@ -6,7 +6,6 @@
 #   It can be parsed in multiple ways from a str.
 # ------------------------------------------------------------------------------
 import unittest
-import json
 from datetime import date
 from calendar import monthrange
 

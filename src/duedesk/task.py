@@ -7,12 +7,12 @@
 # ------------------------------------------------------------------------------
 import unittest
 import json
+from .deadline import Deadline
 
 class Task:
-    def __init__(self, subject: str, deadline: str) -> None:
+    def __init__(self, subject: str, deadline: Deadline) -> None:
         '''Creates a new `Task` object.'''
         self._subject = subject
-        # :todo: use deadline class here
         self._deadline = deadline
         pass
 
@@ -21,7 +21,7 @@ class Task:
         '''Converts `Task` object into json-compatible str.'''
         data = {
             'subject': self._subject,
-            'deadline': self._deadline
+            'deadline': str(self._deadline)
         }
         str_ = json.dumps(data)
         return str_
@@ -35,7 +35,7 @@ class Task:
             if k == 'subject':
                 t.set_subject(v)
             elif k == 'deadline':
-                t.set_deadline(v)
+                t.set_deadline(Deadline.from_str(v))
         return t
 
 
@@ -49,7 +49,7 @@ class Task:
         return self._subject
 
 
-    def get_deadline(self) -> str:
+    def get_deadline(self) -> Deadline:
         return self._deadline
 
 
@@ -57,40 +57,40 @@ class Task:
         self._subject = s
 
 
-    def set_deadline(self, d: str) -> None:
+    def set_deadline(self, d: Deadline) -> None:
         self._deadline = d
 
 
     def __str__(self) -> str:
         '''Print `Task` as a str.'''
-        repr = '\ntopic: '+self._subject+'\ndue: '+self._deadline+'\n\n'
+        repr = 'topic: '+self._subject+'\tdue: '+str(self._deadline)+'\n'
         return repr
     pass
 
 
 class TestTask(unittest.TestCase):
     def test_new(self):
-        t = Task('write task class', '2022-01-01')
+        t = Task('write task class', Deadline(2022, 1, 1))
         self.assertEqual(t._subject, 'write task class')
-        self.assertEqual(t._deadline, '2022-01-01')
+        self.assertEqual(t._deadline, Deadline(2022, 1, 1))
         pass
 
 
     def test_modifiers_accessors(self):
-        t = Task('nothing', 'never')
+        t = Task('nothing', Deadline(0, 0, 0))
         self.assertEqual(t.get_subject(), 'nothing')
-        self.assertEqual(t.get_deadline(), 'never')
+        self.assertEqual(t.get_deadline(), Deadline(0, 0, 0))
 
         t.set_subject('read a book')
         self.assertEqual(t.get_subject(), 'read a book')
 
-        t.set_deadline('2022-03-15')
-        self.assertEqual(t.get_deadline(), '2022-03-15')
+        t.set_deadline(Deadline(2022, 3, 15))
+        self.assertEqual(t.get_deadline(), Deadline(2022, 3, 15))
         pass
 
 
     def test_to_json(self):
-        t = Task('write a book', '2022-01-01')
+        t = Task('write a book', Deadline(2022, 1, 1))
         self.assertEqual(t.to_json(), 
         '{"subject": "write a book", "deadline": "2022-01-01"}')
         pass
@@ -101,23 +101,23 @@ class TestTask(unittest.TestCase):
             "subject": "write a book",
             "deadline": "2022-01-01",
         }
-        t = Task('write a book', '2022-01-01')
+        t = Task('write a book', Deadline(2022, 1, 1))
         self.assertTrue(Task.from_json(data).partial_eq(t))
         pass
 
 
     def test_partial_eq(self):
         # pointing to different addresses in memory
-        t0 = Task('A', '2022-01-01')
-        t1 = Task('A', '2022-01-01')
+        t0 = Task('A', Deadline(2022, 1, 1))
+        t1 = Task('A', Deadline(2022, 1, 1))
         self.assertNotEqual(t0, t1)
         self.assertTrue(t0.partial_eq(t1))
 
-        t1 = Task('B', '2022-01-01')
+        t1 = Task('B', Deadline(2022, 1, 1))
         self.assertNotEqual(t0, t1)
         self.assertFalse(t0.partial_eq(t1))
 
-        t1 = Task('A', '2022-01-02')
+        t1 = Task('A', Deadline(2022, 1, 2))
         self.assertNotEqual(t0, t1)
         self.assertFalse(t0.partial_eq(t1))
 
