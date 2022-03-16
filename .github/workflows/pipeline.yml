@@ -19,7 +19,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Run unit tests
-        run: python -m unittest discover src/due_desk -v -p "*.py"
+        run: python -m unittest discover src/duedesk -v -p "*.py"
 
       - name: Run integration tests
         run: python -m unittest discover tests -v -p "main.py"
@@ -43,7 +43,7 @@ jobs:
         if: ${{ github.ref_type == 'tag' }}
         run: |
           echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-          echo "__version__ = \"$RELEASE_VERSION\"" > ./src/due_desk/__version__.py
+          echo "__version__ = \"$RELEASE_VERSION\"" > ./src/duedesk/__version__.py
 
       - name: Upload DueDesk python package as artifact
         uses: actions/upload-artifact@v2
