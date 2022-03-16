@@ -69,7 +69,6 @@ class Deadline:
         return result
 
 
-    # :todo: test and implement
     def is_valid(self) -> bool:
         '''Checks if the current date is valid. Invalid dates are signified
         with the caught position set to 0.'''
@@ -85,10 +84,9 @@ class Deadline:
         return False
 
 
-    # :todo: test and implement
     def __str__(self) -> str:
         '''Convert the `deadline` to a str.'''
-        return str(self.get_year())+'-'+str(self.get_month())+'-'+str(self.get_day())
+        return str(self.get_year()).zfill(4)+'-'+str(self.get_month()).zfill(2)+'-'+str(self.get_day()).zfill(2)
 
 
     def __gt__(self, o) -> bool:
@@ -165,6 +163,7 @@ class TestDeadline(unittest.TestCase):
         self.assertEqual(Deadline.from_str('2022-01-02'), Deadline(2022, 1, 2))
         self.assertEqual(Deadline.from_str('2022/01/02'), Deadline(2022, 1, 2))
         self.assertEqual(Deadline.from_str('01/02'), Deadline(2022, 1, 2))
+        self.assertEqual(Deadline.from_str('200\\1\\02'), Deadline(200, 1, 2))
         # invalid formatting cases
         self.assertEqual(Deadline.from_str('-2022/04/02').is_valid(), False)
         self.assertEqual(Deadline.from_str('2022-04/02').is_valid(), False)
@@ -185,6 +184,16 @@ class TestDeadline(unittest.TestCase):
 
         d = Deadline.from_str('3.14')
         self.assertEqual(d.days_out(), d.get_day() - date.today().day)
+        pass
+
+
+    def test_to_str(self):
+        d = Deadline(2022, 1, 5)
+        self.assertEqual(str(d), '2022-01-05')
+        d = Deadline(200, 10, 28)
+        self.assertEqual(str(d), '0200-10-28')
+        d = Deadline(2022, 12, 12)
+        self.assertEqual(str(d), '2022-12-12')
         pass
 
 
