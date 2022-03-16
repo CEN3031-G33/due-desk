@@ -20,15 +20,15 @@ class Tasklist:
 
     # :todo: test and impl
     def add(self, t: Task) -> bool:
-        '''Adds a new `Task` to the list. Returns `false` if a task with the same
+        '''Adds a new `Task` to the list and resorts the list. Returns `false` if a task with the same
         subject already exists.'''
         return False
 
 
-    # :todo: test and impl
     def sort(self) -> None:
         '''Sorts the `Task` objects according to their deadlines, using the `earliest-deadline-first`
         approach. This is a greedy approach that optimizes for minimal lateness.'''
+        self._inner.sort(key=lambda task: task.get_deadline())
         pass
 
 
@@ -82,6 +82,7 @@ class TestTasklist(unittest.TestCase):
             ])
         self.assertTrue(tl.get_by_index(0).partial_eq(Task('A', Deadline(2022, 1, 1))))
         self.assertTrue(tl.get_by_index(2).partial_eq(Task('C', Deadline(2022, 1, 3))))
+        # index out-of-bounds errors
         self.assertTrue(tl.get_by_index(3) == None)
         self.assertTrue(tl.get_by_index(-1) == None)
         pass
@@ -131,5 +132,20 @@ class TestTasklist(unittest.TestCase):
             Task('B', Deadline(2022, 1, 2)),
             Task('C', Deadline(2022, 1, 3)),
             ]))
+        pass
+
+
+    def test_sort(self):
+        tl = Tasklist([
+            Task('A', Deadline(2022, 1, 8)),
+            Task('B', Deadline(2022, 1, 4)),
+            Task('C', Deadline(2022, 1, 5)),
+            ])
+        tl.sort()
+        self.assertEqual(tl, Tasklist([
+            Task('B', Deadline(2022, 1, 4)),
+            Task('C', Deadline(2022, 1, 5)),
+            Task('A', Deadline(2022, 1, 8)),
+        ]))
         pass
     pass
