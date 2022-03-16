@@ -49,21 +49,21 @@ class Deadline:
         return result
 
 
-    # :todo: implement
+    # :todo: test and implement
     def is_valid(self) -> bool:
         '''Checks if the current date is valid. Invalid dates are signified
         as `year = month = day = 0`.'''
         return False
 
 
-    # :todo: implement
-    def is_overdude(self) -> bool:
+    # :todo: test and implement
+    def is_overdue(self) -> bool:
         '''Check if a deadline has passed. Uses the `days_out` method to 
         determine if a deadline has past.'''
         return False
 
 
-    # :todo: implement
+    # :todo: test and implement
     def __str__(self) -> str:
         '''Convert the `deadline` to a str.'''
         return 'todo!'
