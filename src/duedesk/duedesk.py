@@ -1,19 +1,20 @@
 # ------------------------------------------------------------------------------
 # Project: DueDesk
-# Module: due_desk
+# Module: duedesk
 #
 # Abstract: 
 #   The main script called to begin the DueDesk application.
 # ------------------------------------------------------------------------------
 
 import unittest
+from duedesk import task
 
-def due_desk():
+def duedesk():
     print("Welcome to your DueDesk!")
 
 
 def main():
-    due_desk()
+    duedesk()
 
 
 #--- entry-point ---

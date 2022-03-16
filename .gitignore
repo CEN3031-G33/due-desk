@@ -9,3 +9,5 @@ __pycache__/
 
 #ignore mac-os metadata
 .DS_Store
+
+Cargo.toml
