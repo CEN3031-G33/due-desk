@@ -12,6 +12,7 @@ class Task:
     def __init__(self, subject, deadline) -> None:
         '''Creates a new `Task` object.'''
         self._subject = subject
+        # :todo: use deadline class here
         self._deadline = deadline
         pass
 
