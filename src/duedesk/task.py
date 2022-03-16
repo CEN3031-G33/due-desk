@@ -6,7 +6,6 @@
 #   things a user should do and allows user's to input new tasks.
 # ------------------------------------------------------------------------------
 import unittest
-import json
 from .deadline import Deadline
 
 class Task:
@@ -14,6 +13,8 @@ class Task:
         '''Creates a new `Task` object.'''
         self._subject = subject
         self._deadline = deadline
+        # :todo: add a `_status` attribute to mark when a task is complete
+        # :todo: add a '_progress` attribute that stores time worked on task
         pass
 
 

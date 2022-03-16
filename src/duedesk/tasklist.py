@@ -6,7 +6,6 @@
 #   with a common group of tasks.
 # ------------------------------------------------------------------------------
 import unittest
-import json
 from typing import List
 from .task import Task
 from .deadline import Deadline
@@ -18,12 +17,19 @@ class Tasklist:
         self._inner = inner
         pass
     
-    
+
     # :todo: test and impl
     def add(self, t: Task) -> bool:
         '''Adds a new `Task` to the list. Returns `false` if a task with the same
         subject already exists.'''
         return False
+
+
+    # :todo: test and impl
+    def sort(self) -> None:
+        '''Sorts the `Task` objects according to their deadlines, using the `earliest-deadline-first`
+        approach. This is a greedy approach that optimizes for minimal lateness.'''
+        pass
 
 
     @classmethod
