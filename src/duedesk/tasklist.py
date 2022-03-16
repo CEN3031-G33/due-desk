@@ -19,11 +19,13 @@ class Tasklist:
         pass
 
 
-    # :todo: test and impl
     @classmethod
     def from_dict(cls, data: dict):
-        '''Converts a python dictionary loaded from json into a `Tasklist` object.'''
-        tl = Tasklist()
+        '''Deserializes a python dictionary loaded from json into a `Tasklist` object.'''
+        tasks = []
+        for v in data.values():
+            tasks += [Task.from_dict(v)]
+        tl = Tasklist(tasks)
         return tl
 
     
@@ -35,15 +37,26 @@ class Tasklist:
 
 
     def to_dict(self) -> dict:
-        '''Converts `Tasklist` object into json-compatible `dict`.'''
+        '''Serializes `Tasklist` object into json-compatible `dict`.'''
         data = {}
         # :todo: maybe a better way to store in json instead of by index?
-        # maybe move `subject` to be a task's key in the `dict`.
+        #   maybe move `subject` to be a task's key in the `dict`.
         i = 0
         for t in self._inner:
             data[str(i)] = t.to_dict()
             i += 1
         return data
+
+
+    def __eq__(self, o) -> bool:
+        '''Performs in-order element-wise partial equality check on `Tasks`.'''
+        if len(self._inner) != len(o._inner):
+            return False
+        else:
+            for i in range(0, len(self._inner)):
+                if not self._inner[i].partial_eq(o._inner[i]):
+                    return False
+        return True
     pass
 
 
@@ -67,7 +80,6 @@ class TestTasklist(unittest.TestCase):
             Task('B', Deadline(2022, 1, 2)),
             Task('C', Deadline(2022, 1, 3)),
             ])
-
         self.assertEqual(tl.to_dict(), 
         {
             "0": {
@@ -83,5 +95,28 @@ class TestTasklist(unittest.TestCase):
                 "deadline": "2022-01-03"
             }
         })
+        pass
+
+
+    def test_from_dict(self):
+        data = {
+            "0": {
+                "subject": "A",
+                "deadline": "2022-01-01"
+            },
+            "1": {
+                "subject": "B",
+                "deadline": "2022-01-02"
+            },
+            "2": {
+                "subject": "C",
+                "deadline": "2022-01-03"
+            }
+        }
+        self.assertEqual(Tasklist.from_dict(data), Tasklist([
+            Task('A', Deadline(2022, 1, 1)),
+            Task('B', Deadline(2022, 1, 2)),
+            Task('C', Deadline(2022, 1, 3)),
+            ]))
         pass
     pass
