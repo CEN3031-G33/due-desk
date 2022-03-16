@@ -49,6 +49,26 @@ class Deadline:
         return result
 
 
+    # :todo: implement
+    def is_valid(self) -> bool:
+        '''Checks if the current date is valid. Invalid dates are signified
+        as `year = month = day = 0`.'''
+        return False
+
+
+    # :todo: implement
+    def is_overdude(self) -> bool:
+        '''Check if a deadline has passed. Uses the `days_out` method to 
+        determine if a deadline has past.'''
+        return False
+
+
+    # :todo: implement
+    def __str__(self) -> str:
+        '''Convert the `deadline` to a str.'''
+        return 'todo!'
+
+
     def __gt__(self, o) -> bool:
         if self.get_year() != o.get_year():
             return self.get_year() > o.get_year()
@@ -112,6 +132,7 @@ class TestDeadline(unittest.TestCase):
         self.assertEqual(d.get_month(), 1)
         self.assertEqual(d.get_year(), 2022)
         pass
+
 
     def test_cmp(self):
         d0 = Deadline(2022, 1, 2)
