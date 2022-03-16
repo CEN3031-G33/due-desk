@@ -7,7 +7,7 @@
 # ------------------------------------------------------------------------------
 
 import unittest
-from duedesk import task
+from .task import Task
 
 def duedesk():
     print("Welcome to your DueDesk!")
