@@ -13,7 +13,7 @@ import setuptools
 with open("README.md", "r", encoding="utf-8") as fh:
     entire_description = fh.read()
 
-exec(open('src/due_desk/__version__.py').read())
+exec(open('src/duedesk/__version__.py').read())
 setuptools.setup(
     name="DueDesk",
     version=__version__,
@@ -26,10 +26,10 @@ setuptools.setup(
     classifiers=[
         "",
     ],
-    install_requires=[],
+    install_requires=['PyQt5'],
     entry_points='''
             [console_scripts]
-            duedesk=due_desk.due_desk:main
+            duedesk=duedesk.duedesk:main
         ''',
     package_dir={"": "src"},
     package_data={"": []},
