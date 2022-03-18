@@ -13,7 +13,7 @@ class Task:
         '''Creates a new `Task` object.'''
         self._subject = subject
         self._deadline = deadline
-        # :todo: add a `_status` attribute to mark when a task is complete
+        self._complete = False
         # :todo: add a '_progress` attribute that stores time worked on task
         pass
 
@@ -22,7 +22,8 @@ class Task:
         '''Serializes `Task` object into json-compatible `dict`.'''
         data = {
             'subject': self._subject,
-            'deadline': str(self._deadline)
+            'deadline': str(self._deadline),
+            'complete': str(self._complete)
         }
         return data
 
@@ -36,11 +37,13 @@ class Task:
                 t.set_subject(v)
             elif k == 'deadline':
                 t.set_deadline(Deadline.from_str(v))
+            elif k == 'complete':
+                t.set_complete(bool(v))
         return t
 
 
     def partial_eq(self, other) -> bool:
-        '''Evaluates if two `Task` objects have the same attribute data.'''
+        '''Evaluates if two `Task` objects have the same deadline and subject data.'''
         return self.get_deadline() == other.get_deadline() and \
             self.get_subject() == other.get_subject()
 
@@ -53,12 +56,20 @@ class Task:
         return self._deadline
 
 
+    def is_complete(self) -> bool:
+        return self._complete
+
+
     def set_subject(self, s: str) -> None:
         self._subject = s
 
 
     def set_deadline(self, d: Deadline) -> None:
         self._deadline = d
+
+
+    def set_complete(self, c: bool) -> None:
+        self._complete = c
 
 
     def __str__(self) -> str:
@@ -73,6 +84,7 @@ class TestTask(unittest.TestCase):
         t = Task('write task class', Deadline(2022, 1, 1))
         self.assertEqual(t._subject, 'write task class')
         self.assertEqual(t._deadline, Deadline(2022, 1, 1))
+        self.assertEqual(t._complete, False)
         pass
 
 
@@ -86,13 +98,18 @@ class TestTask(unittest.TestCase):
 
         t.set_deadline(Deadline(2022, 3, 15))
         self.assertEqual(t.get_deadline(), Deadline(2022, 3, 15))
+
+        self.assertEqual(t.is_complete(), False)
+        t.set_complete(True)
+        self.assertEqual(t.is_complete(), True)
         pass
 
 
     def test_to_dict(self):
         t = Task('write a book', Deadline(2022, 1, 1))
+        t.set_complete(True)
         self.assertEqual(t.to_dict(), 
-        {"subject": "write a book", "deadline": "2022-01-01"})
+        {"complete": "True", "subject": "write a book", "deadline": "2022-01-01"})
         pass
 
     
@@ -100,9 +117,12 @@ class TestTask(unittest.TestCase):
         data = {
             "subject": "write a book",
             "deadline": "2022-01-01",
+            "complete": "True",
         }
         t = Task('write a book', Deadline(2022, 1, 1))
+        t.set_complete(True)
         self.assertTrue(Task.from_dict(data).partial_eq(t))
+        self.assertTrue(Task.from_dict(data).is_complete(), True)
         pass
 
 

@@ -97,14 +97,17 @@ class TestTasklist(unittest.TestCase):
         self.assertEqual(tl.to_dict(), 
         {
             "0": {
+                "complete": "False",
                 "subject": "A",
                 "deadline": "2022-01-01"
             },
             "1": {
+                "complete": "False",
                 "subject": "B",
                 "deadline": "2022-01-02"
             },
             "2": {
+                "complete": "False",
                 "subject": "C",
                 "deadline": "2022-01-03"
             }
