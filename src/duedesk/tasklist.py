@@ -10,7 +10,6 @@ from typing import List
 from .task import Task
 from .deadline import Deadline
 
-# :wip:
 class Tasklist:
     def __init__(self, inner: List[Task]):
         '''Creates a `Tasklist` object.'''
@@ -18,11 +17,18 @@ class Tasklist:
         pass
     
 
-    # :todo: test and impl
     def add(self, t: Task) -> bool:
         '''Adds a new `Task` to the list and resorts the list. Returns `false` if a task with the same
         subject already exists.'''
-        return False
+        # check for existing equivalent task
+        for x in self._inner:
+            if x.partial_eq(t):
+                return False
+        # append to the list
+        self._inner.append(t)
+        # sort items according to earliest-deadline-first
+        self.sort()
+        return True
 
 
     def sort(self) -> None:
@@ -159,5 +165,32 @@ class TestTasklist(unittest.TestCase):
             Task('C', Deadline(2022, 1, 5)),
             Task('A', Deadline(2022, 1, 8)),
         ]))
+        pass
+
+
+    def test_add(self):
+        tl = Tasklist([
+            Task('A', Deadline(2022, 1, 4)),
+            Task('B', Deadline(2022, 1, 5)),
+            Task('C', Deadline(2022, 1, 8)),
+            ])
+        # adds a new task to the task list
+        result = tl.add(Task('D', Deadline(2022, 1, 6)))
+        self.assertTrue(result)
+        self.assertEqual(tl, Tasklist([
+            Task('A', Deadline(2022, 1, 4)),
+            Task('B', Deadline(2022, 1, 5)),
+            Task('D', Deadline(2022, 1, 6)),
+            Task('C', Deadline(2022, 1, 8)),
+            ]))
+        # fails to add an already equivalent task
+        result = tl.add(Task('A', Deadline(2022, 1, 4)))
+        self.assertFalse(result)
+        self.assertEqual(tl, Tasklist([
+            Task('A', Deadline(2022, 1, 4)),
+            Task('B', Deadline(2022, 1, 5)),
+            Task('D', Deadline(2022, 1, 6)),
+            Task('C', Deadline(2022, 1, 8)),
+            ]))
         pass
     pass
