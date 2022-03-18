@@ -14,16 +14,17 @@ class Task:
         self._subject = subject
         self._deadline = deadline
         self._complete = False
-        # :todo: add a '_progress` attribute that stores time worked on task
+        self._minutes = 0.0
         pass
 
 
     def to_dict(self) -> dict:
         '''Serializes `Task` object into json-compatible `dict`.'''
         data = {
-            'subject': self._subject,
-            'deadline': str(self._deadline),
-            'complete': str(self._complete)
+            'subject': self.get_subject(),
+            'deadline': str(self.get_deadline()),
+            'complete': str(self.is_complete()),
+            'minutes': str(self.get_minutes())
         }
         return data
 
@@ -39,6 +40,8 @@ class Task:
                 t.set_deadline(Deadline.from_str(v))
             elif k == 'complete':
                 t.set_complete(bool(v))
+            elif k == 'minutes':
+                t.add_minutes(float(v))
         return t
 
 
@@ -56,12 +59,20 @@ class Task:
         return self._deadline
 
 
+    def get_minutes(self) -> float:
+        return self._minutes
+
+
     def is_complete(self) -> bool:
         return self._complete
 
 
     def set_subject(self, s: str) -> None:
         self._subject = s
+
+    
+    def add_minutes(self, m: float) -> None:
+        self._minutes += m
 
 
     def set_deadline(self, d: Deadline) -> None:
@@ -105,11 +116,27 @@ class TestTask(unittest.TestCase):
         pass
 
 
+    def test_add_minutes(self):
+        t = Task('A', Deadline(2022, 1, 1))
+        self.assertEqual(t.get_minutes(), 0.0)
+        t.add_minutes(1.0)
+        self.assertEqual(t.get_minutes(), 1.0)
+        t.add_minutes(15.7)
+        self.assertEqual(t.get_minutes(), 16.7)
+        pass
+
+
     def test_to_dict(self):
         t = Task('write a book', Deadline(2022, 1, 1))
         t.set_complete(True)
+        t.add_minutes(10.2)
         self.assertEqual(t.to_dict(), 
-        {"complete": "True", "subject": "write a book", "deadline": "2022-01-01"})
+        {
+            "complete": "True", 
+            "subject": "write a book", 
+            "minutes": '10.2', 
+            "deadline": "2022-01-01"
+        })
         pass
 
     
@@ -118,11 +145,12 @@ class TestTask(unittest.TestCase):
             "subject": "write a book",
             "deadline": "2022-01-01",
             "complete": "True",
+            "minutes": "60.4",
         }
         t = Task('write a book', Deadline(2022, 1, 1))
-        t.set_complete(True)
         self.assertTrue(Task.from_dict(data).partial_eq(t))
         self.assertTrue(Task.from_dict(data).is_complete(), True)
+        self.assertTrue(Task.from_dict(data).get_minutes(), 60.4)
         pass
 
 

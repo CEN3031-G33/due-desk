@@ -99,16 +99,19 @@ class TestTasklist(unittest.TestCase):
             "0": {
                 "complete": "False",
                 "subject": "A",
+                "minutes": '0.0',
                 "deadline": "2022-01-01"
             },
             "1": {
                 "complete": "False",
                 "subject": "B",
+                "minutes": '0.0',
                 "deadline": "2022-01-02"
             },
             "2": {
                 "complete": "False",
                 "subject": "C",
+                "minutes": '0.0',
                 "deadline": "2022-01-03"
             }
         })
@@ -119,15 +122,21 @@ class TestTasklist(unittest.TestCase):
         data = {
             "0": {
                 "subject": "A",
-                "deadline": "2022-01-01"
+                "deadline": "2022-01-01",
+                "minutes": '0.0',
+                "complete": "False",
             },
             "1": {
                 "subject": "B",
-                "deadline": "2022-01-02"
+                "deadline": "2022-01-02",
+                "minutes": '0.0',
+                "complete": "False",
             },
             "2": {
                 "subject": "C",
-                "deadline": "2022-01-03"
+                "deadline": "2022-01-03",
+                "minutes": '0.0',
+                "complete": "False",
             }
         }
         self.assertEqual(Tasklist.from_dict(data), Tasklist([
