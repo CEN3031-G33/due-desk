@@ -100,6 +100,7 @@ class MyTableWidget(QWidget):
         c_scaledPixmap = c_pixmap.scaled(screen.size().width(), screen.size().height(), Qt.KeepAspectRatio, Qt.FastTransformation)        
         c.setPixmap(c_scaledPixmap)        
         c.setScaledContents(True)
+        self.__initButtons__()
         
 
     def __initButtons__(self):
