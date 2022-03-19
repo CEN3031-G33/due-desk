@@ -8,7 +8,11 @@ import unittest
 from .window import *
 
 def due_desk():
-    window()
+    #window()
+    app = QApplication(sys.argv)
+    screen = app.primaryScreen()
+    ex = App()
+    sys.exit(app.exec_())
 
 
 def main():
