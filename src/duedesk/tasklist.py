@@ -51,12 +51,8 @@ class Tasklist:
     def to_dict(self) -> dict:
         '''Serializes `Tasklist` object into json-compatible `dict`.'''
         data = {}
-        # :todo: maybe a better way to store in json instead of by index?
-        #   maybe move `subject` to be a task's key in the `dict`.
-        i = 0
-        for t in self._inner:
-            data[str(i)] = t.to_dict()
-            i += 1
+        for t in enumerate(self._inner):
+            data[str(t[0])] = t[1].to_dict()
         return data
 
 
