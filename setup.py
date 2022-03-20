@@ -26,7 +26,7 @@ setuptools.setup(
     classifiers=[
         "",
     ],
-    install_requires=[],
+    install_requires=['PyQt5'],
     entry_points='''
             [console_scripts]
             duedesk=duedesk.duedesk:main

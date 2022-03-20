@@ -65,8 +65,7 @@ class Deadline:
 
     def days_out(self) -> int:
         '''Computes how many days from today until deadline.'''
-        result = self.get_day() - date.today().day
-        # :todo: take into account months and years in advance
+        result = (date(self.get_year(), self.get_month(), self.get_day()) - date.today()).days
         return result
 
 
@@ -80,9 +79,7 @@ class Deadline:
 
     # :todo: test and implement
     def is_overdue(self) -> bool:
-        '''Check if a deadline has passed. Uses the `days_out` method to 
-        determine if a deadline has past.'''
-        return False
+        return self.days_out() < 0
 
 
     def __str__(self) -> str:
@@ -186,12 +183,18 @@ class TestDeadline(unittest.TestCase):
 
 
     def test_days_out(self):
-        d = Deadline.from_str('3.18')
-        self.assertEqual(d.days_out(), d.get_day() - date.today().day)
+        d = Deadline.from_str('3.25')
+        self.assertEqual(d.days_out(), (date(d.get_year(), d.get_month(), d.get_day()) - date.today()).days)
 
-        d = Deadline.from_str('3.14')
-        self.assertEqual(d.days_out(), d.get_day() - date.today().day)
+        d = Deadline.from_str('8.12')
+        self.assertEqual(d.days_out(), (date(d.get_year(), d.get_month(), d.get_day()) - date.today()).days)
         pass
+
+    def test_overdue(self):
+        d0 = Deadline(2022, 1, 1)
+        d1 = Deadline(2030, 1, 1)
+        self.assertTrue(d0.is_overdue())
+        self.assertFalse(d1.is_overdue())
 
 
     def test_to_str(self):

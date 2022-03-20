@@ -1,13 +1,13 @@
-#ignore distributed packages
+# ignore distributed packages
 dist/
 
-#ignore cached python dependencies
+# ignore cached python dependencies
 __pycache__/
 
-#ignore manual builds
+# ignore manual builds
 *.egg-info
 
-#ignore mac-os metadata
+# ignore mac-os metadata
 .DS_Store
 
 Cargo.toml
