@@ -85,13 +85,13 @@ class App(QMainWindow):
 
         self.table_widget = MyTableWidget(self)
         self.setCentralWidget(self.table_widget)
-        
+
         self.showFullScreen()
 
 class MyTableWidget(QWidget):
     def __init__(self, parent):
         super(QWidget, self).__init__(parent)
-        #self.layout = QVBoxLayout(self)        
+               
         
         img_path = root_dir + "\\resources\desk.jpg" 
         
@@ -105,6 +105,27 @@ class MyTableWidget(QWidget):
         #self.__initButtons__()
         self.__initInventoryList__()
         self.__initTaskList__()
+        self.__initDragButtons__()
+
+# vvvv drag and drop vvvv
+
+    def __initDragButtons__(self):
+        # needed to allow drops on application window
+        self.setAcceptDrops(True)
+
+        self.button = Button('My Image', self)
+        self.button.move(50,50)
+
+        #### drag and drop events ####
+    def dragEnterEvent(self, event):
+        event.accept()
+
+    def dropEvent(self, event):
+        position = event.pos()
+        self.button.move(position)
+        event.accept()
+
+# ^^^^ drag and drop ^^^^
 
     def __initInventoryList__(self):
         screen = QApplication.primaryScreen()
@@ -192,3 +213,25 @@ class MyTableWidget(QWidget):
         tasks_button.raise_()
         add_task_button.raise_()
         zen_button.raise_()
+
+
+class Button(QPushButton):
+    def __init__(self, button_text, parent):
+        super().__init__(button_text, parent)
+        
+
+    def mouseMoveEvent(self, event):
+        # if left mouse button is clicked 
+        if event.buttons() == Qt.LeftButton:
+            
+            # create a mime object
+            mimeData = QMimeData()
+            
+            # create a qdrag object
+            drag = QDrag(self)
+
+            # set mime object as the drag mime data 
+            drag.setMimeData(mimeData)
+
+            # give drag the mouse transformation 
+            dropAction = drag.exec_(Qt.MoveAction)
