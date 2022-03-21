@@ -1,6 +1,8 @@
+from asyncio import Task
+from operator import truediv
 import os
 import sys
-from PyQt5 import QtCore
+from PyQt5 import QtCore, QtWidgets, uic
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -84,7 +86,7 @@ class App(QMainWindow):
         self.table_widget = MyTableWidget(self)
         self.setCentralWidget(self.table_widget)
         
-        self.showMaximized()
+        self.showFullScreen()
 
 class MyTableWidget(QWidget):
     def __init__(self, parent):
@@ -96,12 +98,78 @@ class MyTableWidget(QWidget):
         c_pixmap = QPixmap(img_path)
         c = QLabel(self)
         screen = QApplication.primaryScreen()
-        c.resize(screen.size().width(), screen.size().height())        
-        c_scaledPixmap = c_pixmap.scaled(screen.size().width(), screen.size().height(), Qt.KeepAspectRatio, Qt.FastTransformation)        
+        c.resize(int(screen.size().width() * 0.8), int(screen.size().height() * 0.8))        
+        c_scaledPixmap = c_pixmap.scaled(int(screen.size().width() * 0.8), int(screen.size().height() * 0.8), Qt.KeepAspectRatio, Qt.FastTransformation)        
         c.setPixmap(c_scaledPixmap)        
         c.setScaledContents(True)
-        self.__initButtons__()
-        
+        #self.__initButtons__()
+        self.__initInventoryList__()
+        self.__initTaskList__()
+
+    def __initInventoryList__(self):
+        screen = QApplication.primaryScreen()
+        inv_list = QWidget(self)
+        inv_list.resize(int(screen.size().width() * 0.8), int(screen.size().height() * 0.2))
+        inv_list.move(0, int(screen.size().height() * 0.8))
+
+        hbox = QHBoxLayout()
+        group_box = QGroupBox("Inventory")
+        group_box.setStyleSheet("text-align: center; font-size: 20px; font-family: Helevetica;")
+
+        inventory = []
+
+        for i in range (0,50):
+            item = QLabel()
+            item_pixmap = QPixmap(root_dir + "\\resources\lamp.jpg")
+            item.setPixmap(item_pixmap.scaled(int(screen.size().width() * 0.1), int(screen.size().height() * 0.1), Qt.KeepAspectRatio, Qt.FastTransformation))
+            inventory.append(item)
+            hbox.addWidget(inventory[i])
+
+        group_box.setLayout(hbox)
+        title = "Inventory (" + str(len(inventory)) + ")"
+        group_box.setTitle(title)
+
+        scroll = QScrollArea()
+        scroll.setWidget(group_box)
+        scroll.setWidgetResizable(True)
+
+        layout = QVBoxLayout()
+        layout.addWidget(scroll)
+
+        inv_list.setLayout(layout)
+
+
+
+    def __initTaskList__(self):
+        screen = QApplication.primaryScreen()
+        task_list = QWidget(self)
+        task_list.resize(int(screen.size().width() * 0.2), int(screen.size().height()))
+        task_list.move(int(screen.size().width() * 0.8), 0)
+
+        form_layout = QFormLayout()
+        group_box = QGroupBox("My Tasks")
+        group_box.setStyleSheet("text-align: center; font-size: 20px; font-family: Helevetica;")
+
+        tasks = []
+
+        for i in range (0,50):
+            tasks.append(QLabel("Task"))
+            form_layout.addRow(tasks[i])
+
+        group_box.setLayout(form_layout)
+        title = "My Tasks (" + str(len(tasks)) + ")"
+        group_box.setTitle(title)
+        scroll = QScrollArea()
+        scroll.setWidget(group_box)
+        scroll.setWidgetResizable(True)
+
+        layout = QVBoxLayout()
+        layout.addWidget(scroll)
+
+        task_list.setLayout(layout)
+    
+            
+
 
     def __initButtons__(self):
         home_button = QPushButton('Home', self)
