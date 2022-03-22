@@ -39,7 +39,7 @@ class Task:
             elif k == 'deadline':
                 t.set_deadline(Deadline.from_str(v))
             elif k == 'complete':
-                t.set_complete(bool(v))
+                t.set_complete(v == "True")
             elif k == 'minutes':
                 t.add_minutes(float(v))
         return t
@@ -149,8 +149,18 @@ class TestTask(unittest.TestCase):
         }
         t = Task('write a book', Deadline(2022, 1, 1))
         self.assertTrue(Task.from_dict(data).partial_eq(t))
-        self.assertTrue(Task.from_dict(data).is_complete(), True)
-        self.assertTrue(Task.from_dict(data).get_minutes(), 60.4)
+        self.assertEqual(Task.from_dict(data).is_complete(), True)
+        self.assertEqual(Task.from_dict(data).get_minutes(), 60.4)
+        data = {
+            "subject": "write a book",
+            "deadline": "2022-01-01",
+            "complete": "False",
+            "minutes": "60.4",
+        }
+        t = Task('write a book', Deadline(2022, 1, 1))
+        self.assertTrue(Task.from_dict(data).partial_eq(t))
+        self.assertEqual(Task.from_dict(data).is_complete(), False)
+        self.assertEqual(Task.from_dict(data).get_minutes(), 60.4)
         pass
 
 
