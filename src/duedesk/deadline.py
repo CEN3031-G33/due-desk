@@ -264,6 +264,5 @@ class TestDeadline(unittest.TestCase):
 
         self.assertTrue(d0 > d1)
         self.assertTrue(d1 < d0)
-
         pass
     pass
