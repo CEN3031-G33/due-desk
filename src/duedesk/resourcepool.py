@@ -6,10 +6,8 @@
 #   represent the pool of items the user can add to their desk and the items
 #   currently on the desk.
 # ------------------------------------------------------------------------------
-
 import unittest
-from typing import List
-from typing import Tuple
+from typing import List, Tuple
 from .resource import Resource
 
 class Resourcepool:
@@ -18,15 +16,17 @@ class Resourcepool:
         self._inner = inner
         pass
 
+
     def get_by_index(self, i: int) -> Resource:
         '''Access the `Resource` at index `i`. Returns `None` if `i` is an invalid index.'''
         if i >= len(self._inner) or i < 0:
             return None
         return self._inner[i]
 
+
     @classmethod
     def from_dict(cls, data: dict):
-        '''Deserializes a `dict` loaded from json into a `Tasklist` object.'''
+        '''Deserializes a `dict` loaded from json into a `Resourcepool` object.'''
         resources = []
         for v in data.values():
             resources += [Resource.from_dict(v)]
@@ -35,19 +35,22 @@ class Resourcepool:
 
 
     def to_dict(self) -> dict:
-        '''Serializes `Tasklist` object into json-compatible `dict`.'''
+        '''Serializes `Resourcepool` object into json-compatible `dict`.'''
         data = {}
         for r in enumerate(self._inner):
             data[str(r[0])] = r[1].to_dict()
         return data
 
+
     def filter_dups(self) -> None:
-        '''Remove duplicate resources from list'''
+        '''Remove duplicate resources from pool, as defined by `partial_eq`.'''
         rpmap = {}
         for v in self._inner:
             if v.get_filepath().lower() not in rpmap.keys():
                 rpmap[v.get_filepath().lower()] = v
         self._inner = list(rpmap.values())
+        pass
+
 
     # :idea: create offset attribute if unique resource pixelmaps are implemented
     def get_by_location(self, location: Tuple[float, float]) -> Resource:
@@ -58,9 +61,8 @@ class Resourcepool:
                 location[0] <= r.get_location()[0] + offset and \
                 location[1] >= r.get_location()[1] and \
                 location[1] <= r.get_location()[1] + offset:
-                    return r
+                return r
         return None
-        
 
 
     def __eq__(self, o) -> bool:
@@ -74,13 +76,33 @@ class Resourcepool:
         return True
     pass
 
+
 class TestResourcelist(unittest.TestCase):
     def test_new_and_get_by_index(self):
         rp = Resourcepool([
             Resource("file", (1, 2), True, False, 3),
             Resource("./README.md", (1, 2), True, False, 3),
-            Resource("./docs/images/superdesk.png", (1, 2), True, False, 3)
+            Resource("./docs/images/superdesk.png", (14.0, 17.0), False, True, 999)
             ])
+        r0 = rp.get_by_index(0)
+        self.assertEqual(r0.get_filepath(), "file")
+        self.assertEqual(r0.get_location(), (1, 2))
+        self.assertEqual(r0.is_locked(), True)
+        self.assertEqual(r0.is_inscene(), False)
+        self.assertEqual(r0.get_cost(), 3)
+
+        r0 = rp.get_by_index(2)
+        self.assertEqual(r0.get_filepath(), "./docs/images/superdesk.png")
+        self.assertEqual(r0.get_location(), (14.0, 17.0))
+        self.assertEqual(r0.is_locked(), False)
+        self.assertEqual(r0.is_inscene(), True)
+        self.assertEqual(r0.get_cost(), 999)
+
+        # invalid boundaries
+        self.assertTrue(rp.get_by_index(-1) == None)
+        self.assertTrue(rp.get_by_index(4) == None)
+        pass
+
 
     def test_to_dict(self):
         rp = Resourcepool([
@@ -154,6 +176,7 @@ class TestResourcelist(unittest.TestCase):
             ]))
         pass
 
+
     def test_remove_dups(self):
         rp0 = Resourcepool([
             Resource("file", (1.2, 5.4), True, False, 3),
@@ -168,6 +191,8 @@ class TestResourcelist(unittest.TestCase):
             ])
         rp0.filter_dups()
         self.assertEqual(rp0, rp1)
+        pass
+
 
     def test_get_by_location(self):
         rp = Resourcepool([
@@ -175,9 +200,14 @@ class TestResourcelist(unittest.TestCase):
             Resource("./README.md", (50, 80), True, False, -3),
             Resource("./docs/images/superdesk.png", (17.4, 17.4), False, True, 3),
             ])
+        # no resource exists at this location
         self.assertEqual(rp.get_by_location((0.0, 0.0)), None)
+        # valid mouse locations
         self.assertEqual(rp.get_by_location((10.0, 20.1)), rp.get_by_index(0))
         self.assertEqual(rp.get_by_location((113.9, 143.9)), rp.get_by_index(1))
         self.assertEqual(rp.get_by_location((114, 144)), rp.get_by_index(1))
+        # outside of boxed-bounds
         self.assertEqual(rp.get_by_location((114.1, 144)), None)
         self.assertEqual(rp.get_by_location((114, 144.1)), None)
+        pass
+    pass
