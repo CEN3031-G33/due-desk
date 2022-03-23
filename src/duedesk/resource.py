@@ -106,7 +106,6 @@ class TestResource(unittest.TestCase):
         self.assertEqual(3, r._cost)
         pass
 
-    # :todo: verify `to_dict` method works
     def test_to_dict(self):
         r = Resource("file", (1, 2), True, False, 3)
         self.assertEqual(r.to_dict(), 
@@ -119,7 +118,6 @@ class TestResource(unittest.TestCase):
         })
         pass
     
-    # :todo: verify `from_dict` method works
     def test_from_dict(self):
         d = {
             "path": "file", 
