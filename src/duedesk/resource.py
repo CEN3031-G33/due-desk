@@ -53,6 +53,10 @@ class Resource:
         return r
         pass
 
+    def partial_eq(self, other) -> bool:
+        '''Evaluates if two `Resource` objects have the same filepaths.'''
+        return self._filepath == other._filepath
+
 
     def get_filepath(self) -> str:
         return self._filepath
@@ -149,6 +153,17 @@ class TestResource(unittest.TestCase):
         self.assertEqual(r0._inscene, r1._inscene)
         self.assertEqual(r0._cost, r1._cost)
         pass
+
+
+    def test_partial_eq(self):
+        r0 = Resource("file", (1, 2), True, False, 3)
+        r1 = Resource("dud", (1, 2), True, False, 3)
+        self.assertFalse(r0.partial_eq(r1))
+        self.assertFalse(r0 == r1)
+
+        r1 = Resource("file", (1.4, 2.2), False, True, -4)
+        self.assertTrue(r0.partial_eq(r1))
+        self.assertFalse(r0 == r1)
 
 
     def test_accessors_modifiers(self):
