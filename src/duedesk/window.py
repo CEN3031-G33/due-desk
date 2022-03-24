@@ -23,6 +23,10 @@ def add_click():
 def zen_click():
     print('Zen Mode Button Clicked')
 
+@pyqtSlot()
+def item_move():
+    print("item moved")
+
 
 '''
 def window():
@@ -110,10 +114,13 @@ class MyTableWidget(QWidget):
 # vvvv drag and drop vvvv
 
     def __initDragButtons__(self):
+        screen = QApplication.primaryScreen()
         # needed to allow drops on application window
         self.setAcceptDrops(True)
 
-        self.button = Button('My Image', self)
+        
+
+        self.button = Button(self)
         self.button.move(50,50)
 
         #### drag and drop events ####
@@ -126,6 +133,7 @@ class MyTableWidget(QWidget):
         event.accept()
 
 # ^^^^ drag and drop ^^^^
+
 
     def __initInventoryList__(self):
         screen = QApplication.primaryScreen()
@@ -140,9 +148,11 @@ class MyTableWidget(QWidget):
         inventory = []
 
         for i in range (0,50):
-            item = QLabel()
-            item_pixmap = QPixmap(root_dir + "\\resources\lamp.jpg")
-            item.setPixmap(item_pixmap.scaled(int(screen.size().width() * 0.1), int(screen.size().height() * 0.1), Qt.KeepAspectRatio, Qt.FastTransformation))
+            item = QPushButton()
+            item_pixmap = QIcon(root_dir + "\\resources\lamp.jpg")
+            item.setIcon(item_pixmap)
+            item.setIconSize(QSize(int(screen.size().width() * 0.1), int(screen.size().height() * 0.1)))
+            #item.clicked.connect(__initDragButtons__)
             inventory.append(item)
             hbox.addWidget(inventory[i])
 
@@ -216,9 +226,14 @@ class MyTableWidget(QWidget):
 
 
 class Button(QPushButton):
-    def __init__(self, button_text, parent):
-        super().__init__(button_text, parent)
-        
+    def __init__(self, parent):
+        super().__init__(parent)
+        screen = QApplication.primaryScreen()
+        QButton_icon = QIcon(root_dir + "\\resources\lamp.jpg")
+        self.setIcon(QButton_icon)
+        self.setIconSize(QSize(int(screen.size().width() * 0.1), int(screen.size().height() * 0.1)))
+        self.setStyleSheet("border: none;")
+        self.resize(QSize(int(screen.size().width() * 0.1), int(screen.size().height() * 0.1)))
 
     def mouseMoveEvent(self, event):
         # if left mouse button is clicked 
