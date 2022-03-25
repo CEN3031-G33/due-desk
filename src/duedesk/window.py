@@ -27,6 +27,10 @@ def zen_click():
 def item_move():
     print("item moved")
 
+def start_task():
+    print("hello")
+
+
 
 '''
 def window():
@@ -182,10 +186,13 @@ class MyTableWidget(QWidget):
         group_box.setStyleSheet("text-align: center; font-size: 20px; font-family: Helevetica;")
 
         tasks = []
-
+        task_buttons = []
         for i in range (0,50):
-            tasks.append(QLabel("Task"))
-            form_layout.addRow(tasks[i])
+            tasks.append(QLabel("Task - this one is long and should take 2 lines"))
+            button = QPushButton("Start")
+            button.clicked.connect(start_task)
+            task_buttons.append(button)
+            form_layout.addRow(tasks[i], task_buttons[i])
 
         group_box.setLayout(form_layout)
         title = "My Tasks (" + str(len(tasks)) + ")"
