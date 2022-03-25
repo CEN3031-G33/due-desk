@@ -29,55 +29,7 @@ def item_move():
 
 def start_task():
     print("hello")
-
-
-
-'''
-def window():
-    
-    Example code to open a basic window to demonstrate pyqt5 is properly 
-    installed.
-    
-    app = QApplication(sys.argv)
-    screen = app.primaryScreen()
-
-    w = QWidget()
-    home_button = QPushButton('Home', w)
-    home_button.move(0,0)
-    home_button.clicked.connect(home_click)
-    offset = home_button.width()
-    tasks_button = QPushButton('Tasks', w)
-    tasks_button.move(offset, 0)
-    tasks_button.clicked.connect(tasks_click)
-    offset += tasks_button.width()
-    add_task_button = QPushButton('Add Task', w)
-    add_task_button.move(offset, 0)
-    add_task_button.clicked.connect(add_click)
-    offset += add_task_button.width()
-    zen_button = QPushButton('Zen Mode', w)
-    zen_button.move(offset, 0)
-    zen_button.clicked.connect(zen_click)
-
-    b = QLabel(w)
-    b.setText("Welcome to your DueDesk!")
-    b.setStyleSheet(" font-size: 20px; font-family: Helvetica; background-color: brown; color: white;")
-    b.setAlignment(QtCore.Qt.AlignLeft)
-    b.move(int((screen.size().width())/2 - b.size().width()),int(screen.size().height()/20))
-    c = QLabel(w)
-    img_path = root_dir + "\\resources\desk.jpg"
-    c_pixmap = QPixmap(img_path)
-    c.setPixmap(c_pixmap.scaled(screen.size().width(), screen.size().height()))
-    c.setScaledContents(True)
-    b.raise_()
-    home_button.raise_()
-    tasks_button.raise_()
-    add_task_button.raise_()
-    zen_button.raise_()
-    w.setWindowTitle("Due Desk")
-    w.setFixedSize(screen.size().width(), screen.size().height())
-    w.showMaximized()
-    sys.exit(app.exec_()) 
-'''    
+   
 
 class App(QMainWindow):
     def __init__(self):
@@ -121,25 +73,23 @@ class MyTableWidget(QWidget):
         # needed to allow drops on application window
         self.setAcceptDrops(True)
 
-
-        self.button = Button(self)
+        for i in range(len(desk)):
+            btn = Button(self)
+        #self.button = Button(self)
         #self.button.move(50,50)
 
         #### drag and drop events ####
+
     def dragEnterEvent(self, event):
         event.accept()
 
     def dropEvent(self, event):
         position = event.pos()
-        self.button.move(position)
+        event.source().move(position)
         event.accept()
 
+
 # ^^^^ drag and drop ^^^^
-
-    ''' TODO: Need a way to know which button is being pressed. Currently, the system knows a when one of the desk items is being clicked but always moves the inital one.
-
-    this is due to the line above, self.button.move(position) in the dropEvent() function. We need to figure out how to tell this function which item we're trying to move
-    '''
 
     def displayButtons(self):
         for i in range(len(desk)):
@@ -183,10 +133,6 @@ class MyTableWidget(QWidget):
 
         inv_list.setLayout(layout)
 
-    def buttonClicked(self):
-        new_item = QLabel(self)
-
-
     def __initTaskList__(self):
         screen = QApplication.primaryScreen()
         task_list = QWidget(self)
@@ -202,7 +148,7 @@ class MyTableWidget(QWidget):
         for i in range (0,50):
             tasks.append(QLabel("Task - this one is long and should take 2 lines"))
             button = QPushButton("Start")
-            button.clicked.connect(self.buttonClicked)
+            #button.clicked.connect(self.buttonClicked)
             task_buttons.append(button)
             form_layout.addRow(tasks[i], task_buttons[i])
 
@@ -217,36 +163,11 @@ class MyTableWidget(QWidget):
         layout.addWidget(scroll)
 
         task_list.setLayout(layout)
-    
-            
-
-
-    def __initButtons__(self):
-        home_button = QPushButton('Home', self)
-        home_button.move(0,0)
-        home_button.clicked.connect(home_click)
-        offset = home_button.width()
-        tasks_button = QPushButton('Tasks', self)
-        tasks_button.move(offset, 0)
-        tasks_button.clicked.connect(tasks_click)
-        offset += tasks_button.width()
-        add_task_button = QPushButton('Add Task', self)
-        add_task_button.move(offset, 0)
-        add_task_button.clicked.connect(add_click)
-        offset += add_task_button.width()
-        zen_button = QPushButton('Zen Mode', self)
-        zen_button.move(offset, 0)
-        zen_button.clicked.connect(zen_click)
-
-        home_button.raise_()
-        tasks_button.raise_()
-        add_task_button.raise_()
-        zen_button.raise_()
-
 
 class Button(QPushButton):
     def __init__(self, parent):
         super().__init__(parent)
+        self.setAcceptDrops(True)
         screen = QApplication.primaryScreen()
         QButton_icon = QIcon(root_dir + "\\resources\lamp.jpg")
         self.setIcon(QButton_icon)
@@ -266,6 +187,10 @@ class Button(QPushButton):
 
             # set mime object as the drag mime data 
             drag.setMimeData(mimeData)
+
+            pixmap = QPixmap(self.size())
+            self.render(pixmap)
+            drag.setPixmap(pixmap)
 
             # give drag the mouse transformation 
             dropAction = drag.exec_(Qt.MoveAction)
