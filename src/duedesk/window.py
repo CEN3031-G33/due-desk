@@ -1,5 +1,3 @@
-from asyncio import Task
-from operator import truediv
 import os
 import sys
 from PyQt5 import QtCore, QtWidgets, uic
@@ -9,6 +7,8 @@ from PyQt5.QtWidgets import *
 
 
 root_dir = os.path.realpath(os.path.join(os.path.dirname(__file__), '../..'))
+inventory = []
+desk = []
 
 @pyqtSlot()
 def home_click():
@@ -118,14 +118,12 @@ class MyTableWidget(QWidget):
 # vvvv drag and drop vvvv
 
     def __initDragButtons__(self):
-        screen = QApplication.primaryScreen()
         # needed to allow drops on application window
         self.setAcceptDrops(True)
 
-        
 
         self.button = Button(self)
-        self.button.move(50,50)
+        #self.button.move(50,50)
 
         #### drag and drop events ####
     def dragEnterEvent(self, event):
@@ -138,6 +136,19 @@ class MyTableWidget(QWidget):
 
 # ^^^^ drag and drop ^^^^
 
+    ''' TODO: Need a way to know which button is being pressed. Currently, the system knows a when one of the desk items is being clicked but always moves the inital one.
+
+    this is due to the line above, self.button.move(position) in the dropEvent() function. We need to figure out how to tell this function which item we're trying to move
+    '''
+
+    def displayButtons(self):
+        for i in range(len(desk)):
+            desk[i].show()
+
+    def createButton(self):
+        desk.append(Button(self))
+        self.displayButtons()
+
 
     def __initInventoryList__(self):
         screen = QApplication.primaryScreen()
@@ -149,14 +160,13 @@ class MyTableWidget(QWidget):
         group_box = QGroupBox("Inventory")
         group_box.setStyleSheet("text-align: center; font-size: 20px; font-family: Helevetica;")
 
-        inventory = []
 
         for i in range (0,50):
             item = QPushButton()
             item_pixmap = QIcon(root_dir + "\\resources\lamp.jpg")
             item.setIcon(item_pixmap)
             item.setIconSize(QSize(int(screen.size().width() * 0.1), int(screen.size().height() * 0.1)))
-            #item.clicked.connect(__initDragButtons__)
+            item.clicked.connect(self.createButton)
             inventory.append(item)
             hbox.addWidget(inventory[i])
 
@@ -173,6 +183,8 @@ class MyTableWidget(QWidget):
 
         inv_list.setLayout(layout)
 
+    def buttonClicked(self):
+        new_item = QLabel(self)
 
 
     def __initTaskList__(self):
@@ -190,7 +202,7 @@ class MyTableWidget(QWidget):
         for i in range (0,50):
             tasks.append(QLabel("Task - this one is long and should take 2 lines"))
             button = QPushButton("Start")
-            button.clicked.connect(start_task)
+            button.clicked.connect(self.buttonClicked)
             task_buttons.append(button)
             form_layout.addRow(tasks[i], task_buttons[i])
 
