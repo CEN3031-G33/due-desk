@@ -29,7 +29,9 @@ class App(QMainWindow):
         self.setGeometry(self.left, self.top, self.width, self.height)
 
         self.drawMenu()
-        self.showFullScreen()
+        self.showMaximized()
+        #self.setFixedSize(self.layout.sizeHint())
+        
 
     def drawMenu(self):
         self.menu_widget = menuScreen(self)
@@ -156,10 +158,15 @@ class MyTableWidget(QWidget):
             desk[i].show()
 
     def saveButtons(self):
+        # send button values to resource class 
+        # values needed:
+        # filepath: str, location: Tuple[float, float], locked: bool, inscene: bool, cost: int
         print("printing all button positions")
         for i in range(len(desk)):
             button = desk[i]
+            #print(button.get_filepath())
             print(button.x(), button.y())
+            
 
     def createButton(self):
         desk.append(Button(self))
@@ -247,11 +254,22 @@ class Button(QPushButton):
         self.setAcceptDrops(True)
         screen = QApplication.primaryScreen()
         QButton_icon = QIcon(root_dir + "\\resources\lamp.png")
+
+        #create a filepath Button attribute so it can be accesed later 
+        #fpButton = Button()
+        #fpButton.filepath = QButton_icon
+
+        
         self.setIcon(QButton_icon)
         self.setIconSize(QSize(int(screen.size().width() * 0.1), int(screen.size().height() * 0.1)))
         self.setStyleSheet("border: none;")
         self.resize(QSize(int(screen.size().width() * 0.1), int(screen.size().height() * 0.1)))
         self.move(int(screen.size().width() * 0.8 - self.width()), int(screen.size().height() * 0.8 - self.height()))
+
+ 
+    # create get method for file attribute 
+    #def get_filepath(self) -> str:
+    #    return self.fpButton
 
     def mouseMoveEvent(self, event):
         # if left mouse button is clicked 

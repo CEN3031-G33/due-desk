@@ -29,8 +29,7 @@ class Button(QPushButton):
             dropAction = drag.exec_(Qt.MoveAction)
 
 
-def savePosition(x,y):
-            print(x,y)
+
 #### application template ####
 class AppDemo(QWidget):
     def __init__(self):
@@ -42,6 +41,9 @@ class AppDemo(QWidget):
 
         self.button = Button('My Image', self)
         self.button.move(50,50)
+    
+    def savePosition(self, x,y):
+            print(x,y)
 
     #### drag and drop events ####
     def dragEnterEvent(self, event):
@@ -51,7 +53,7 @@ class AppDemo(QWidget):
         position = event.pos()
         self.button.move(position)
         #print(self.button.x(), self.button.y())
-        savePosition(self.button.x(),self.button.y())
+        self.savePosition(self.button.x(),self.button.y())
         event.accept()
 
 if __name__ == '__main__':
