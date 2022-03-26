@@ -10,6 +10,7 @@ import webbrowser
 root_dir = os.path.realpath(os.path.join(os.path.dirname(__file__), '../..'))
 inventory = []
 desk = []
+trash_pos = QRect()
 
 @pyqtSlot()
 def start_task():
@@ -106,6 +107,15 @@ class MyTableWidget(QWidget):
         exit_button.setText("Exit")
         exit_button.clicked.connect(self.exitDesk)
 
+        trash_path = root_dir + "\\resources\\trash.png"
+        trash_widget = QLabel(self)
+        trash_widget_pixmap = QPixmap(trash_path)
+        trash_widget.resize(int(screen.size().width() * 0.15), int(screen.size().height() * 0.15))
+        trash_widget.setPixmap(trash_widget_pixmap.scaled(int(screen.size().width() * 0.15), int(screen.size().height() * 0.15), Qt.KeepAspectRatio, Qt.FastTransformation))
+        trash_widget.move(0, int(screen.size().height() * 0.65))
+
+        trash_pos = trash_widget.geometry()
+
     def __initDeskLayout__():
         foo = 1
 
@@ -126,9 +136,18 @@ class MyTableWidget(QWidget):
         event.accept()
 
     def dropEvent(self, event):
+        screen = QApplication.primaryScreen()
         position = event.pos()
+        trash_size = QSize(int(screen.size().width() * 0.15), int(screen.size().height() * 0.15))
+        trash_point = QPoint(0, int(screen.size().height() * 0.65) )
+        trash_rect = QRect(trash_point, trash_size)
+        if (trash_rect.contains(position)):
+            desk.remove(event.source())
+            event.source().deleteLater()
+            return
         event.source().move(position)
         event.accept()
+            
 
 # ^^^^ drag and drop ^^^^
 
