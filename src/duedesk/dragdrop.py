@@ -28,6 +28,9 @@ class Button(QPushButton):
             # give drag the mouse transformation 
             dropAction = drag.exec_(Qt.MoveAction)
 
+
+def savePosition(x,y):
+            print(x,y)
 #### application template ####
 class AppDemo(QWidget):
     def __init__(self):
@@ -47,6 +50,8 @@ class AppDemo(QWidget):
     def dropEvent(self, event):
         position = event.pos()
         self.button.move(position)
+        #print(self.button.x(), self.button.y())
+        savePosition(self.button.x(),self.button.y())
         event.accept()
 
 if __name__ == '__main__':

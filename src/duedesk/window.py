@@ -155,6 +155,12 @@ class MyTableWidget(QWidget):
         for i in range(len(desk)):
             desk[i].show()
 
+    def saveButtons(self):
+        print("printing all button positions")
+        for i in range(len(desk)):
+            button = desk[i]
+            print(button.x(), button.y())
+
     def createButton(self):
         desk.append(Button(self))
         self.displayButtons()
@@ -232,6 +238,7 @@ class MyTableWidget(QWidget):
 
     def exitDesk(self):
         self.close()
+        self.saveButtons()
         QApplication.quit()
 
 class Button(QPushButton):
