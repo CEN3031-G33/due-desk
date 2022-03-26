@@ -12,25 +12,8 @@ inventory = []
 desk = []
 
 @pyqtSlot()
-def home_click():
-    print('Home Button Clicked')
-
-def tasks_click():
-    print('Tasks Button Clicked')
-
-def add_click():
-    print('Add Task Button Clicked')
-
-def zen_click():
-    print('Zen Mode Button Clicked')
-
-@pyqtSlot()
-def item_move():
-    print("item moved")
-
 def start_task():
-    print("hello")
-   
+    print("hello")   
 
 class App(QMainWindow):
     def __init__(self):
@@ -45,8 +28,6 @@ class App(QMainWindow):
         self.setGeometry(self.left, self.top, self.width, self.height)
 
         self.drawMenu()
-
-
         self.showFullScreen()
 
     def drawMenu(self):
@@ -56,7 +37,6 @@ class App(QMainWindow):
     def drawTable(self):
         self.table_widget = MyTableWidget(self)
         self.setCentralWidget(self.table_widget)
-
 
 class menuScreen(QWidget):
     def __init__(self, parent):
@@ -92,8 +72,7 @@ class menuScreen(QWidget):
         parent.drawTable()
 
     def help(self):
-        webbrowser.open('https://github.com/CEN3031-G33/due-desk')
-    
+        webbrowser.open('https://github.com/CEN3031-G33/due-desk') 
 
 class MyTableWidget(QWidget):
     def __init__(self, parent):
@@ -151,7 +130,6 @@ class MyTableWidget(QWidget):
         event.source().move(position)
         event.accept()
 
-
 # ^^^^ drag and drop ^^^^
 
     def displayButtons(self):
@@ -162,7 +140,6 @@ class MyTableWidget(QWidget):
         desk.append(Button(self))
         self.displayButtons()
 
-
     def __initInventoryList__(self):
         screen = QApplication.primaryScreen()
         inv_list = QWidget(self)
@@ -172,7 +149,6 @@ class MyTableWidget(QWidget):
         hbox = QHBoxLayout()
         group_box = QGroupBox("Inventory")
         group_box.setStyleSheet("text-align: center; font-size: 20px; font-family: Helevetica;")
-
 
         for i in range (0,50):
             item = QPushButton()
