@@ -209,7 +209,8 @@ class MyTableWidget(QWidget):
         tasks = []
         task_buttons = []
         for i in range (0,50):
-            tasks.append(QLabel("Task - this one is long and should take 2 lines"))
+            label = QLabel("Task - this one is long and should take 2 lines")
+            tasks.append(label)
             button = QPushButton("Start")
             #button.clicked.connect(self.buttonClicked)
             task_buttons.append(button)
