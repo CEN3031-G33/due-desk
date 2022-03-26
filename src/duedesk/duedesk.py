@@ -7,7 +7,7 @@
 import unittest
 from .window import *
 
-def due_desk():
+def duedesk():
     #window()
     app = QApplication(sys.argv)
     ex = App()
@@ -15,7 +15,7 @@ def due_desk():
 
 
 def main():
-    due_desk()
+    duedesk()
 
 
 if __name__ == "__main__":
