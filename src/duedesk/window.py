@@ -93,7 +93,7 @@ class MyTableWidget(QWidget):
         self.__initDragButtons__()
 
     def __initTable__(self):
-        img_path = root_dir + "/resources/desk.png" 
+        img_path = root_dir + "/resources/pixel-desk.png" 
         
         c_pixmap = QPixmap(img_path)
         c = QLabel(self)
@@ -191,7 +191,7 @@ class MyTableWidget(QWidget):
 
         for i in range (0,50):
             item = QPushButton()
-            item_pixmap = QIcon(root_dir + "/resources/lamp.png")
+            item_pixmap = QIcon(root_dir + "/resources/pc.png")
             item.setIcon(item_pixmap)
             item.setIconSize(QSize(int(screen.size().width() * 0.1), int(screen.size().height() * 0.1)))
             item.clicked.connect(self.createButton)
@@ -230,7 +230,7 @@ class Button(QPushButton):
         super().__init__(parent)
         self.setAcceptDrops(True)
         screen = QApplication.primaryScreen()
-        QButton_icon = QIcon(root_dir + "/resources/lamp.png")
+        QButton_icon = QIcon(root_dir + "/resources/pc.png")
 
         #create a filepath Button attribute so it can be accesed later 
         #fpButton = Button()
