@@ -1,15 +1,15 @@
 # ------------------------------------------------------------------------------
 # Project  : DueDesk
-# Module   : desk_item
+# Module   : ResourceGui
 # Abstract : 
 #   A desk item is composed of gui related materials such as `Button` and
 #   business logic-related materials for `Resource`. It couples them together.
 # ------------------------------------------------------------------------------
 import unittest
 
-class GuiResource:
+class ResourceGui:
     pass
 
 
-class GuiResource(unittest.TestCase):
+class ResourceGui(unittest.TestCase):
     pass

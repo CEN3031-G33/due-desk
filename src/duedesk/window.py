@@ -5,9 +5,10 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 import webbrowser
-
+from .taskgui import TaskGui
 
 root_dir = os.path.realpath(os.path.join(os.path.dirname(__file__), '../..'))
+root_dir = '.'
 inventory = []
 desk = []
 trash_pos = QRect()
@@ -50,7 +51,7 @@ class menuScreen(QWidget):
         p.setColor(self.backgroundRole(), color)
         self.setPalette(p)
 
-        img_path = root_dir + "\\resources\\title.png" 
+        img_path = root_dir + "/resources/title.png" 
         c_pixmap = QPixmap(img_path)
         c = QLabel(self)
         screen = QApplication.primaryScreen()
@@ -80,13 +81,14 @@ class menuScreen(QWidget):
 class MyTableWidget(QWidget):
     def __init__(self, parent):
         super(QWidget, self).__init__(parent)
+        self._parent = parent
         self.__initTable__()
         self.__initInventoryList__()
         self.__initTaskList__()
         self.__initDragButtons__()
 
     def __initTable__(self):
-        img_path = root_dir + "\\resources\desk.png" 
+        img_path = root_dir + "/resources/desk.png" 
         
         c_pixmap = QPixmap(img_path)
         c = QLabel(self)
@@ -96,7 +98,7 @@ class MyTableWidget(QWidget):
         c.setPixmap(c_scaledPixmap)        
         c.setScaledContents(True)
 
-        paint_path = root_dir + "\\resources\\paint-bucket.png"
+        paint_path = root_dir + "/resources/paint-bucket.png"
         paint_icon = QIcon(paint_path)
         paint = QPushButton(self)
         paint.setIcon(paint_icon)
@@ -109,7 +111,7 @@ class MyTableWidget(QWidget):
         exit_button.setText("Exit")
         exit_button.clicked.connect(self.exitDesk)
 
-        trash_path = root_dir + "\\resources\\trash.png"
+        trash_path = root_dir + "/resources/trash.png"
         trash_widget = QLabel(self)
         trash_widget_pixmap = QPixmap(trash_path)
         trash_widget.resize(int(screen.size().width() * 0.15), int(screen.size().height() * 0.15))
@@ -180,11 +182,11 @@ class MyTableWidget(QWidget):
 
         hbox = QHBoxLayout()
         group_box = QGroupBox("Inventory")
-        group_box.setStyleSheet("text-align: center; font-size: 20px; font-family: Helevetica;")
+        group_box.setStyleSheet("text-align: center; font-size: 10px; font-family: Menlo;")
 
         for i in range (0,50):
             item = QPushButton()
-            item_pixmap = QIcon(root_dir + "\\resources\lamp.png")
+            item_pixmap = QIcon(root_dir + "/resources/lamp.png")
             item.setIcon(item_pixmap)
             item.setIconSize(QSize(int(screen.size().width() * 0.1), int(screen.size().height() * 0.1)))
             item.clicked.connect(self.createButton)
@@ -212,17 +214,11 @@ class MyTableWidget(QWidget):
 
         form_layout = QFormLayout()
         group_box = QGroupBox("My Tasks")
-        group_box.setStyleSheet("text-align: center; font-size: 20px; font-family: Helevetica;")
+        group_box.setStyleSheet("text-align: center; font-size: 10px; font-family: Menlo;")
 
         tasks = []
-        task_buttons = []
-        for i in range (0,50):
-            label = QLabel("Task - this one is long and should take 2 lines")
-            tasks.append(label)
-            button = QPushButton("Start")
-            #button.clicked.connect(self.buttonClicked)
-            task_buttons.append(button)
-            form_layout.addRow(tasks[i], task_buttons[i])
+        for _ in range (0,50):
+            TaskGui(self._parent).glue_to_gui(form_layout)
 
         group_box.setLayout(form_layout)
         title = "My Tasks (" + str(len(tasks)) + ")"
@@ -248,12 +244,13 @@ class MyTableWidget(QWidget):
         self.saveButtons()
         QApplication.quit()
 
+
 class Button(QPushButton):
     def __init__(self, parent):
         super().__init__(parent)
         self.setAcceptDrops(True)
         screen = QApplication.primaryScreen()
-        QButton_icon = QIcon(root_dir + "\\resources\lamp.png")
+        QButton_icon = QIcon(root_dir + "/resources/lamp.png")
 
         #create a filepath Button attribute so it can be accesed later 
         #fpButton = Button()
