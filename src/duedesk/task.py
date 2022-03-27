@@ -84,7 +84,7 @@ class Task:
         self._complete = c
 
 
-    def get_task_key(self) -> str:
+    def get_key(self) -> str:
         '''Returns a `Task` objects unique key representation.'''
         return self.get_subject()+str(self.get_deadline())
 

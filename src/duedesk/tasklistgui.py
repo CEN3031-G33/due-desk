@@ -22,7 +22,7 @@ class TasklistGui(QWidget):
         self._inner = {}
         for tg in inner:
             if self.add(tg) == False:
-                print('warning: could not add duplicate task to task list', tg.get_task().get_task_key())
+                print('warning: could not add duplicate task \"'+tg.get_task().get_subject()+"\" to list")
             pass
 
         self._form_layout = QFormLayout()
@@ -51,7 +51,7 @@ class TasklistGui(QWidget):
         # note: make `Tasklist` iterable (implement new class and __iter__)
         # https://thispointer.com/python-how-to-make-a-class-iterable-create-iterator-class-for-it/
         for task in self._tl._inner: 
-            self._inner[task.get_task_key()].glue_to_gui(self._form_layout)
+            self._inner[task.get_key()].glue_to_gui(self._form_layout)
         self.show()
         pass
 
@@ -61,7 +61,7 @@ class TasklistGui(QWidget):
         subject and same deadline already exists.'''
         if self._tl.add(tg.get_task()) == True:
             # use subject and deadline as unique key to store `TaskGui` 
-            self._inner[tg.get_task().get_task_key()] = tg
+            self._inner[tg.get_task().get_key()] = tg
             return True
         return False
 
