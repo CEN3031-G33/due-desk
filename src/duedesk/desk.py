@@ -7,15 +7,15 @@
 # ------------------------------------------------------------------------------
 import unittest
 import json, os
-from .tasklist import Tasklist
+from .tasklistgui import TasklistGui
+from PyQt5.QtWidgets import *
 
 class Desk: 
-    def __init__(self, filepath: str):
+    def __init__(self, filepath: str, root: QMainWindow):
         '''Creates a `Desk` instance.'''
+        self._root = root
         self._file = filepath
-        # :note: instead of storing actual tasks, need to store the glue items for
-        #   smooth interface between business logic and gui
-        self._tl = Tasklist([])
+        self._tlg = TasklistGui(self._root, [])
         pass
 
     
@@ -28,8 +28,9 @@ class Desk:
         # read contents from file
         with open(self.get_file(), 'r') as fp:
             data = json.load(fp)
-            print(data)
-            # :todo: parse data in data structure accordingly
+            # hand off data to tasklist gui
+            self._tlg.load(data)
+            self._tlg.glue_to_gui()
         pass
 
 
@@ -50,7 +51,7 @@ class Desk:
 
 class TestDesk(unittest.TestCase):
     def test_new(self):
-        d = Desk("./tests/data.json")
-        d.load_from_file()
+        #d = Desk(None, "./tests/data.json")
+        #d.load_from_file()
         pass
     pass

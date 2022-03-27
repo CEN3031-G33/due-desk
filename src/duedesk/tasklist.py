@@ -19,7 +19,7 @@ class Tasklist:
 
     def add(self, t: Task) -> bool:
         '''Adds a new `Task` to the list and resorts the list. Returns `false` if a task with the same
-        subject already exists.'''
+        subject and same deadline already exists.'''
         # check for existing equivalent task
         for x in self._inner:
             if x.partial_eq(t):
@@ -61,6 +61,10 @@ class Tasklist:
         if i >= len(self._inner) or i < 0:
             return None
         return self._inner[i]
+
+
+    def __len__(self) -> int:
+        return len(self._inner)
 
 
     def __eq__(self, o) -> bool:

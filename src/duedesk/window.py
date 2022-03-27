@@ -5,7 +5,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 import webbrowser
-from .taskgui import TaskGui
+from .tasklistgui import TasklistGui
+from .desk import Desk
 
 root_dir = os.path.realpath(os.path.join(os.path.dirname(__file__), '../..'))
 root_dir = '.'
@@ -81,10 +82,14 @@ class menuScreen(QWidget):
 class MyTableWidget(QWidget):
     def __init__(self, parent):
         super(QWidget, self).__init__(parent)
+
+        # boot up the due desk!
+        dd = Desk('./tests/data.json', parent)
+        dd.load_from_file()
+
         self._parent = parent
         self.__initTable__()
         self.__initInventoryList__()
-        self.__initTaskList__()
         self.__initDragButtons__()
 
     def __initTable__(self):
@@ -206,31 +211,6 @@ class MyTableWidget(QWidget):
 
         inv_list.setLayout(layout)
 
-    def __initTaskList__(self):
-        screen = QApplication.primaryScreen()
-        task_list = QWidget(self)
-        task_list.resize(int(screen.size().width() * 0.2), int(screen.size().height()))
-        task_list.move(int(screen.size().width() * 0.8), 0)
-
-        form_layout = QFormLayout()
-        group_box = QGroupBox("My Tasks")
-        group_box.setStyleSheet("text-align: center; font-size: 10px; font-family: Menlo;")
-
-        tasks = []
-        for _ in range (0,50):
-            TaskGui(self._parent).glue_to_gui(form_layout)
-
-        group_box.setLayout(form_layout)
-        title = "My Tasks (" + str(len(tasks)) + ")"
-        group_box.setTitle(title)
-        scroll = QScrollArea()
-        scroll.setWidget(group_box)
-        scroll.setWidgetResizable(True)
-
-        layout = QVBoxLayout()
-        layout.addWidget(scroll)
-
-        task_list.setLayout(layout)
 
     def setColor(self):
         self.setAutoFillBackground(True)

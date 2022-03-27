@@ -1,1 +1,26 @@
-{}
+{
+    "0": {
+        "subject": "C",
+        "deadline": "2022-01-03",
+        "minutes":  "0.0",
+        "complete": "False"
+    },
+    "1": {
+        "subject": "A",
+        "deadline": "2022-01-01",
+        "minutes":  "0.0",
+        "complete": "False"
+    },
+    "2": {
+        "subject": "B",
+        "deadline": "2022-01-02",
+        "minutes": "0.0",
+        "complete": "False"
+    },
+    "3": {
+        "subject": "A",
+        "deadline": "2022-01-01",
+        "minutes":  "1.2",
+        "complete": "False"
+    }
+}

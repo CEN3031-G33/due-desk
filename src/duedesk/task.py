@@ -38,6 +38,7 @@ class Task:
                 t.set_subject(v)
             elif k == 'deadline':
                 t.set_deadline(Deadline.from_str(v))
+                # note: account for invalid deadline loaded... t.get_deadline().is_valid()
             elif k == 'complete':
                 t.set_complete(v == "True")
             elif k == 'minutes':
@@ -81,6 +82,11 @@ class Task:
 
     def set_complete(self, c: bool) -> None:
         self._complete = c
+
+
+    def get_task_key(self) -> str:
+        '''Returns a `Task` objects unique key representation.'''
+        return self.get_subject()+str(self.get_deadline())
 
 
     def __str__(self) -> str:

@@ -14,7 +14,7 @@ class TaskGui(QWidget):
     def __init__(self, root: QMainWindow):
         '''Creates a `TaskGui' instance.'''
         super(QWidget, self).__init__(root)
-        self._task = Task("Sample", Deadline.from_str("2022-01-01"))
+        self._task = Task("sample", Deadline.from_str("2022-01-01"))
         # configure the task's gui label
         self._label = QLabel(self._task.get_subject()+' '+str(self._task.get_deadline()))
         # configure the task's gui button
@@ -33,13 +33,17 @@ class TaskGui(QWidget):
         '''Loads `Task` attributes from a dictionary into existing instance.'''
         self._task = Task.from_dict(data)
         # update gui elements
-        self._label.setText(self._task.get_subject())
+        self._label.setText(self._task.get_subject()+' '+str(self._task.get_deadline()))
         pass
 
 
     def save(self) -> dict:
         '''Saves `Task` attributes to a dictionary.'''
         self._task.to_dict()
+
+
+    def get_task(self) -> Task:
+        return self._task
 
 
     # method bound to clicking 'start' button for `TaskGui` object
