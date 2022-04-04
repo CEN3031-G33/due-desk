@@ -281,18 +281,18 @@ class Button(QPushButton):
 
 class TestGui(unittest.TestCase):
     def test_menu(self):
-        m = menuScreen()
+        m = menuScreen(QWidget)
         self.assertTrue(m.enterDesk())
     
     def test_helpbutton(self):
-        m = menuScreen()
+        m = menuScreen(QWidget)
         self.assertEqual(m.help(), 'https://github.com/CEN3031-G33/due-desk')
 
     def test_exitdesk(self):
-        t = MyTableWidget()
+        t = MyTableWidget(QWidget)
         self.assertTrue(t.exitDesk())
 
     def test_buttonlocation(self):
-        b = Button()
+        b = Button(QPushButton)
         self.assertEqual(b.getX(), 0)
         self.assertEqual(b.getY(), 0)
