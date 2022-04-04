@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import *
 import webbrowser
 from .tasklistgui import TasklistGui
 from .desk import Desk
+import unittest
 
 root_dir = os.path.realpath(os.path.join(os.path.dirname(__file__), '../..'))
 root_dir = '.'
@@ -31,7 +32,7 @@ class App(QMainWindow):
         self.setGeometry(self.left, self.top, self.width, self.height)
 
         self.drawMenu()
-        self.showMaximized()
+        self.showFullScreen()
         #self.setFixedSize(self.layout.sizeHint())
         
 
@@ -75,9 +76,11 @@ class menuScreen(QWidget):
     def enterDesk(self, parent):
         self.close()
         parent.drawTable()
+        return True
 
     def help(self):
-        webbrowser.open('https://github.com/CEN3031-G33/due-desk') 
+        webbrowser.open('https://github.com/CEN3031-G33/due-desk')
+        return 'https://github.com/CEN3031-G33/due-desk'
 
 class MyTableWidget(QWidget):
     def __init__(self, parent):
@@ -223,6 +226,7 @@ class MyTableWidget(QWidget):
         self.close()
         self.saveButtons()
         QApplication.quit()
+        return True
 
 
 class Button(QPushButton):
@@ -248,6 +252,12 @@ class Button(QPushButton):
     #def get_filepath(self) -> str:
     #    return self.fpButton
 
+    def getX(self):
+        return (self.x())
+
+    def getY(self):
+        return (self.y())
+
     def mouseMoveEvent(self, event):
         # if left mouse button is clicked 
         if event.buttons() == Qt.LeftButton:
@@ -267,3 +277,22 @@ class Button(QPushButton):
 
             # give drag the mouse transformation 
             dropAction = drag.exec_(Qt.MoveAction)
+
+
+class TestGui(unittest.TestCase):
+    def test_menu(self):
+        m = menuScreen()
+        self.assertTrue(m.enterDesk())
+    
+    def test_helpbutton(self):
+        m = menuScreen()
+        self.assertEqual(m.help(), 'https://github.com/CEN3031-G33/due-desk')
+
+    def test_exitdesk(self):
+        t = MyTableWidget()
+        self.assertTrue(t.exitDesk())
+
+    def test_buttonlocation(self):
+        b = Button()
+        self.assertEqual(b.getX(), 0)
+        self.assertEqual(b.getY(), 0)
