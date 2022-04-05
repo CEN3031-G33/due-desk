@@ -216,7 +216,7 @@ class MyTableWidget(QWidget):
         p.setColor(self.backgroundRole(), color)
         self.setPalette(p)
 
-    def exitDesk(self):
+    def boxDesk(self):
         self.close()
         self.saveButtons()
         QApplication.quit()

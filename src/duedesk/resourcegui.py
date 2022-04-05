@@ -25,7 +25,12 @@ class ResourceGui(QWidget):
         pass
 
 
-    def glue_to_gui(self, layout: QHBoxLayout):
+    def glue_to_gui(self, layout: QFormLayout):
+        if self._resource.is_inscene() == True:
+            self._button.clicked.connect(self.move_around_desk)
+            self._button.move(self._resource.get_location()[0], self._resource.get_location()[1])
+        else:
+            self._button.clicked.connect(self.bring_to_desk)
         layout.addWidget(self._button)
         pass
 
@@ -35,11 +40,6 @@ class ResourceGui(QWidget):
         self._resource = Resource.from_dict(data)
         self._image = QIcon(self._resource.get_filepath())
         self._button.setIcon(self._image)
-        if self._resource.is_inscene() == True:
-            self._button.clicked.connect(self.move_around_desk)
-            self._button.move(self._resource.get_location()[0], self._resource.get_location()[1])
-        else:
-            self._button.clicked.connect(self.bring_to_desk)
         pass
 
 
@@ -48,6 +48,10 @@ class ResourceGui(QWidget):
         print('info: bringing in inventory item to the desk')
         # :todo: make a copy/new button onto desk (maybe handled by upper-level glue for resource pool)
         pass
+
+
+    def show(self):
+        self._button.show()
 
 
     def get_resource(self) -> Resource:
