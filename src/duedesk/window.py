@@ -131,6 +131,7 @@ class MyTableWidget(QWidget):
     def __initDeskLayout__():
         foo = 1
 
+
 # vvvv drag and drop vvvv
 
     def __initDragButtons__(self):
@@ -216,7 +217,7 @@ class MyTableWidget(QWidget):
         p.setColor(self.backgroundRole(), color)
         self.setPalette(p)
 
-    def boxDesk(self):
+    def exitDesk(self):
         self.close()
         self.saveButtons()
         QApplication.quit()
