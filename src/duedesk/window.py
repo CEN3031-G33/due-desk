@@ -5,9 +5,9 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 import webbrowser
-from .tasklistgui import TasklistGui
 from .desk import Desk
 import unittest
+from .resourcegui import ResourceGui
 
 root_dir = os.path.realpath(os.path.join(os.path.dirname(__file__), '../..'))
 root_dir = '.'
@@ -192,14 +192,8 @@ class MyTableWidget(QWidget):
         group_box = QGroupBox("Inventory")
         group_box.setStyleSheet("text-align: center; font-size: 10px; font-family: Menlo;")
 
-        for i in range (0,50):
-            item = QPushButton()
-            item_pixmap = QIcon(root_dir + "/resources/pc.png")
-            item.setIcon(item_pixmap)
-            item.setIconSize(QSize(int(screen.size().width() * 0.1), int(screen.size().height() * 0.1)))
-            item.clicked.connect(self.createButton)
-            inventory.append(item)
-            hbox.addWidget(inventory[i])
+        for _ in range (0,50):
+            ResourceGui(self).glue_to_gui(hbox)
 
         group_box.setLayout(hbox)
         title = "Inventory (" + str(len(inventory)) + ")"
