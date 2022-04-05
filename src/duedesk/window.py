@@ -225,7 +225,9 @@ class MyTableWidget(QWidget):
 
 
 class Button(QPushButton):
-    imageName = ""
+    imagePath = ""
+    locked = False
+    cost = 0
     
     def __init__(self, parent):
         super().__init__(parent)
@@ -233,10 +235,12 @@ class Button(QPushButton):
         screen = QApplication.primaryScreen()
         QButton_icon = QIcon(root_dir + "/resources/pc.png")
 
-        imageName = root_dir + "/resources/pc.png"
-        #create a filepath Button attribute so it can be accesed later 
-        #fpButton = Button()
-        #fpButton.filepath = QButton_icon
+        # change the path lock and cost parameters here
+        self.imagePath = root_dir + "/resources/pc.png"
+        self.locked = False
+        self.cost = 0
+        
+        
 
         
         self.setIcon(QButton_icon)
@@ -257,7 +261,14 @@ class Button(QPushButton):
         return (self.y())
 
     def getImageName(self):
-        return (self.imageName)
+        return (self.imagePath)
+
+    def getLockStatus(self):
+        return (self.locked)
+
+    def getCost(self):
+        return (self.cost)
+    
 
     def mouseMoveEvent(self, event):
         # if left mouse button is clicked 
