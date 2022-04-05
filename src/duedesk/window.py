@@ -225,12 +225,15 @@ class MyTableWidget(QWidget):
 
 
 class Button(QPushButton):
+    imageName = ""
+    
     def __init__(self, parent):
         super().__init__(parent)
         self.setAcceptDrops(True)
         screen = QApplication.primaryScreen()
         QButton_icon = QIcon(root_dir + "/resources/pc.png")
 
+        imageName = root_dir + "/resources/pc.png"
         #create a filepath Button attribute so it can be accesed later 
         #fpButton = Button()
         #fpButton.filepath = QButton_icon
@@ -252,6 +255,9 @@ class Button(QPushButton):
 
     def getY(self):
         return (self.y())
+
+    def getImageName(self):
+        return (self.imageName)
 
     def mouseMoveEvent(self, event):
         # if left mouse button is clicked 
