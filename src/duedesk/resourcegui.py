@@ -15,17 +15,17 @@ class ResourceGui(QWidget):
     def __init__(self, root: QMainWindow):
         '''Creates a `ResourceGui` instance.'''
         super(QWidget, self).__init__(root)
-        self._button = QPushButton(root)
+        self._button = QPushButton(self)
+        self._button.setIconSize(QSize(64, 64))
         self._filepath = "./resources/pc.png"
         self._image = QIcon(self._filepath)
         self._button.setIcon(self._image)
-        self._button.setIconSize(QSize(64, 64))
-        self._button.clicked.connect(self.bring_to_desk)
         self._resource = Resource(self._filepath, (0, 0), False, False, 0)
         pass
 
 
     def glue_to_gui(self, layout: QFormLayout):
+        '''Attaches the PyQt5 gui elements to the layout.'''
         if self._resource.is_inscene() == True:
             self._button.clicked.connect(self.move_around_desk)
             self._button.move(self._resource.get_location()[0], self._resource.get_location()[1])

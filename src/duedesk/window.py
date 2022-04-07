@@ -1,12 +1,10 @@
 
-import os
-import sys
+import os, sys
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 import webbrowser
 from .desk import Desk
-import unittest
 from .resourcegui import ResourceGui
 
 root_dir = os.path.realpath(os.path.join(os.path.dirname(__file__), '../..'))
@@ -194,7 +192,7 @@ class MyTableWidget(QWidget):
         group_box.setStyleSheet("text-align: center; font-size: 10px; font-family: Menlo;")
 
         for _ in range (0,50):
-            ResourceGui(self).glue_to_gui(hbox)
+            ResourceGui(self._parent).glue_to_gui(hbox)
 
         group_box.setLayout(hbox)
         title = "Inventory (" + str(len(inventory)) + ")"
@@ -239,9 +237,6 @@ class Button(QPushButton):
         self.imagePath = root_dir + "/resources/pc.png"
         self.locked = False
         self.cost = 0
-        
-        
-
         
         self.setIcon(QButton_icon)
         self.setIconSize(QSize(int(screen.size().width() * 0.1), int(screen.size().height() * 0.1)))
