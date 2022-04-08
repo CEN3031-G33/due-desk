@@ -265,6 +265,8 @@ class Button(QPushButton):
         return (self.cost)
     
 
+
+    
     def mouseMoveEvent(self, event):
         # if left mouse button is clicked 
         if event.buttons() == Qt.LeftButton:
