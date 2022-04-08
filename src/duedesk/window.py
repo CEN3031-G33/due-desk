@@ -136,8 +136,8 @@ class MyTableWidget(QWidget):
         # needed to allow drops on application window
         self.setAcceptDrops(True)
 
-        for i in range(len(desk)):
-            btn = Button(self)
+        '''for i in range(len(desk)):
+            btn = Button(self)'''
         #self.button = Button(self)
         #self.button.move(50,50)
 
@@ -171,15 +171,9 @@ class MyTableWidget(QWidget):
         # values needed:
         # filepath: str, location: Tuple[float, float], locked: bool, inscene: bool, cost: int
         print("printing all button positions")
-        for i in range(len(desk)):
-            button = desk[i]
-            #print(button.get_filepath())
-            print(button.x(), button.y())
+        for rg in desk:
+            rg.save()
             
-
-    def createButton(self):
-        desk.append(Button(self))
-        self.displayButtons()
 
     def __initInventoryList__(self):
         screen = QApplication.primaryScreen()
@@ -192,7 +186,7 @@ class MyTableWidget(QWidget):
         group_box.setStyleSheet("text-align: center; font-size: 10px; font-family: Menlo;")
 
         for _ in range (0,50):
-            ResourceGui(self._parent).glue_to_gui(hbox)
+            ResourceGui(self._parent, desk).glue_to_gui(hbox)
 
         group_box.setLayout(hbox)
         title = "Inventory (" + str(len(inventory)) + ")"
@@ -222,87 +216,3 @@ class MyTableWidget(QWidget):
         return True
 
 
-class Button(QPushButton):
-    imagePath = ""
-    locked = False
-    cost = 0
-    
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.setAcceptDrops(True)
-        screen = QApplication.primaryScreen()
-        QButton_icon = QIcon(root_dir + "/resources/pc.png")
-
-        # change the path lock and cost parameters here
-        self.imagePath = root_dir + "/resources/pc.png"
-        self.locked = False
-        self.cost = 0
-        
-        self.setIcon(QButton_icon)
-        self.setIconSize(QSize(int(screen.size().width() * 0.1), int(screen.size().height() * 0.1)))
-        self.setStyleSheet("border: none;")
-        self.resize(QSize(int(screen.size().width() * 0.1), int(screen.size().height() * 0.1)))
-        self.move(int(screen.size().width() * 0.8 - self.width()), int(screen.size().height() * 0.8 - self.height()))
-
- 
-    # create get method for file attribute 
-    #def get_filepath(self) -> str:
-    #    return self.fpButton
-
-    def getX(self):
-        return (self.x())
-
-    def getY(self):
-        return (self.y())
-
-    def getImageName(self):
-        return (self.imagePath)
-
-    def getLockStatus(self):
-        return (self.locked)
-
-    def getCost(self):
-        return (self.cost)
-    
-
-
-    
-    def mouseMoveEvent(self, event):
-        # if left mouse button is clicked 
-        if event.buttons() == Qt.LeftButton:
-            
-            # create a mime object
-            mimeData = QMimeData()
-            
-            # create a qdrag object
-            drag = QDrag(self)
-
-            # set mime object as the drag mime data 
-            drag.setMimeData(mimeData)
-
-            pixmap = QPixmap(self.size())
-            self.render(pixmap)
-            drag.setPixmap(pixmap)
-
-            # give drag the mouse transformation 
-            dropAction = drag.exec_(Qt.MoveAction)
-
-'''
-class TestGui(unittest.TestCase):
-    def test_menu(self):
-        m = menuScreen(QMainWindow)
-        self.assertTrue(m.enterDesk())
-    
-    def test_helpbutton(self):
-        m = menuScreen(QMainWindow)
-        self.assertEqual(m.help(), 'https://github.com/CEN3031-G33/due-desk')
-
-    def test_exitdesk(self):
-        t = MyTableWidget(QMainWindow)
-        self.assertTrue(t.exitDesk())
-
-    def test_buttonlocation(self):
-        b = Button(QPushButton(QWidget(QMainWindow)))
-        self.assertEqual(b.getX(), 0)
-        self.assertEqual(b.getY(), 0)
-        '''

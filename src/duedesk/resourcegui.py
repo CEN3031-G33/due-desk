@@ -13,7 +13,7 @@ from .resource import Resource
 #from .window import Button 
 
 class ResourceGui(QWidget):
-    def __init__(self, root: QMainWindow):
+    def __init__(self, root: QMainWindow, pool):
         '''Creates a `ResourceGui` instance.'''
         super(QWidget, self).__init__(root)
         self._button = QPushButton(self)
@@ -23,6 +23,8 @@ class ResourceGui(QWidget):
         self._button.setIcon(self._image)
         self._resource = Resource(self._filepath, (0, 0), False, False, 0)
         self._root = root
+        self._pool = pool
+        #self._root.setAcceptDrops(True)
         pass
 
 
@@ -49,15 +51,17 @@ class ResourceGui(QWidget):
     def bring_to_desk(self):
         print('info: bringing in inventory item to the desk')
         # :todo: make a copy/new button onto desk (maybe handled by upper-level glue for resource pool)
-        # return new object 
-        # new object has drag and drop 
-        rg = ResourceGui(self._root)
+        rg = ResourceGui(self._root, self._pool)
         rg.get_resource().set_filepath(self._filepath)
         rg._image =  self._image
         rg._button = Button(self._root)
         rg._button.setIcon(self._image)
         rg._button.move(10,10)
+        #rg.setAcceptDrops(True)
         rg._button.show()
+
+        self._pool += [rg]
+
 
 
         #return rg
@@ -75,7 +79,15 @@ class ResourceGui(QWidget):
     def move_around_desk(self):
         print('info: moving item around the desk')
         pass
-    pass
+    
+    def save(self):
+        # extract x and y from button and put into resourc
+        self.get_resource().set_location((self._button.x(),self._button.y()))
+        print(self.get_resource().get_location())
+        
+        pass
+
+    
 
 
 class TestResourceGui(unittest.TestCase):
@@ -93,38 +105,7 @@ class Button(QPushButton):
         self.setIconSize(QSize(int(screen.size().width() * 0.1), int(screen.size().height() * 0.1)))
         self.setStyleSheet("border: none;")
         self.resize(QSize(int(screen.size().width() * 0.1), int(screen.size().height() * 0.1)))
-        '''
-        # change the path lock and cost parameters here
-        #self.imagePath = root_dir + "/resources/pc.png"
-        self.locked = False
-        self.cost = 0
-        
-        #self.setIcon(QButton_icon)
-        self.setIconSize(QSize(int(screen.size().width() * 0.1), int(screen.size().height() * 0.1)))
-        self.setStyleSheet("border: none;")
-        self.resize(QSize(int(screen.size().width() * 0.1), int(screen.size().height() * 0.1)))
-        #self.move(int(screen.size().width() * 0.8 - self.width()), int(screen.size().height() * 0.8 - self.height()))
-        '''
-
- 
-    # create get method for file attribute 
-    #def get_filepath(self) -> str:
-    #    return self.fpButton
-
-    '''def getX(self):
-        return (self.x())
-
-    def getY(self):
-        return (self.y())
-
-    def getImageName(self):
-        return (self.imagePath)
-
-    def getLockStatus(self):
-        return (self.locked)
-
-    def getCost(self):
-        return (self.cost)'''
+      
     
 
 
