@@ -166,6 +166,7 @@ class MyTableWidget(QWidget):
         for i in range(len(desk)):
             desk[i].show()
 
+    # :todo: create save functionality in desk to be called from here 
     def saveButtons(self):
         # send button values to resource class 
         # values needed:
@@ -176,7 +177,8 @@ class MyTableWidget(QWidget):
             
 
     def __initInventoryList__(self):
-        screen = QApplication.primaryScreen()
+
+        '''screen = QApplication.primaryScreen()
         inv_list = QWidget(self)
         inv_list.resize(int(screen.size().width() * 0.8), int(screen.size().height() * 0.2))
         inv_list.move(0, int(screen.size().height() * 0.8))
@@ -199,7 +201,7 @@ class MyTableWidget(QWidget):
         layout = QVBoxLayout()
         layout.addWidget(scroll)
 
-        inv_list.setLayout(layout)
+        inv_list.setLayout(layout)'''
 
 
     def setColor(self):

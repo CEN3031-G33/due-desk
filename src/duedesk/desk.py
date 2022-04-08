@@ -8,6 +8,7 @@
 import unittest
 import json, os
 from .tasklistgui import TasklistGui
+from .resourcepoolgui import *
 from PyQt5.QtWidgets import *
 
 class Desk: 
@@ -16,6 +17,9 @@ class Desk:
         self._root = root
         self._file = filepath
         self._tlg = TasklistGui(self._root, [])
+        self._ilg = Inventory(self._root, [])
+        self._ilg.glue_to_gui()
+        self._plg = Pool(self._root, [])
         pass
 
     
