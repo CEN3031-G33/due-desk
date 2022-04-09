@@ -5,17 +5,10 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 import webbrowser
 from .desk import Desk
-from .resourcegui import ResourceGui
 
 root_dir = os.path.realpath(os.path.join(os.path.dirname(__file__), '../..'))
 root_dir = '.'
-inventory = []
 desk = []
-trash_pos = QRect()
-
-@pyqtSlot()
-def start_task():
-    print("hello")   
 
 class App(QMainWindow):
     def __init__(self):
@@ -32,15 +25,20 @@ class App(QMainWindow):
         self.drawMenu()
         self.showFullScreen()
         #self.setFixedSize(self.layout.sizeHint())
-        
+        pass
+
 
     def drawMenu(self):
         self.menu_widget = menuScreen(self)
         self.setCentralWidget(self.menu_widget)
+        pass
+
 
     def drawTable(self):
         self.table_widget = MyTableWidget(self)
         self.setCentralWidget(self.table_widget)
+        pass
+
 
 class menuScreen(QWidget):
     def __init__(self, parent):
@@ -70,32 +68,38 @@ class menuScreen(QWidget):
         help_button.setText("Help")
         help_button.move(int(screen.size().width()/2), int(screen.size().height()/2))
         help_button.clicked.connect(self.help)
+        pass
 
     def enterDesk(self, parent):
         self.close()
         parent.drawTable()
         return True
 
+
     def help(self):
         webbrowser.open('https://github.com/CEN3031-G33/due-desk')
         return 'https://github.com/CEN3031-G33/due-desk'
+
 
 class MyTableWidget(QWidget):
     def __init__(self, parent):
         super(QWidget, self).__init__(parent)
 
         # boot up the due desk!
-        dd = Desk('./tests/data.json', parent)
-        dd.load_from_file()
+        self._dd = Desk('./tests/data.json', parent)
+        self._dd.load_from_file()
 
         self._parent = parent
         self.__initTable__()
-        self.__initInventoryList__()
-        self.__initDragButtons__()
+        # allow drops on application window
+        self.setAcceptDrops(True)
+        pass
 
+    
     def __initTable__(self):
+        '''Initialize supportive gui elements around the desk.'''
+        # desk background image
         img_path = root_dir + "/resources/pixel-desk.png" 
-        
         c_pixmap = QPixmap(img_path)
         c = QLabel(self)
         screen = QApplication.primaryScreen()
@@ -104,6 +108,7 @@ class MyTableWidget(QWidget):
         c.setPixmap(c_scaledPixmap)        
         c.setScaledContents(True)
 
+        # background paint color
         paint_path = root_dir + "/resources/paint-bucket.png"
         paint_icon = QIcon(paint_path)
         paint = QPushButton(self)
@@ -113,38 +118,25 @@ class MyTableWidget(QWidget):
         paint.clicked.connect(self.setColor)
         paint.setStyleSheet("border: none;")
 
+        # exit button
         exit_button = QPushButton(self)
         exit_button.setText("Exit")
         exit_button.clicked.connect(self.exitDesk)
 
+        # trash can
         trash_path = root_dir + "/resources/trash.png"
         trash_widget = QLabel(self)
         trash_widget_pixmap = QPixmap(trash_path)
         trash_widget.resize(int(screen.size().width() * 0.15), int(screen.size().height() * 0.15))
         trash_widget.setPixmap(trash_widget_pixmap.scaled(int(screen.size().width() * 0.15), int(screen.size().height() * 0.15), Qt.KeepAspectRatio, Qt.FastTransformation))
         trash_widget.move(0, int(screen.size().height() * 0.65))
+        pass
 
-        trash_pos = trash_widget.geometry()
-
-    def __initDeskLayout__():
-        foo = 1
-
-
-# vvvv drag and drop vvvv
-
-    def __initDragButtons__(self):
-        # needed to allow drops on application window
-        self.setAcceptDrops(True)
-
-        '''for i in range(len(desk)):
-            btn = Button(self)'''
-        #self.button = Button(self)
-        #self.button.move(50,50)
-
-        #### drag and drop events ####
 
     def dragEnterEvent(self, event):
         event.accept()
+        pass
+
 
     def dropEvent(self, event):
         screen = QApplication.primaryScreen()
@@ -152,69 +144,30 @@ class MyTableWidget(QWidget):
         trash_size = QSize(int(screen.size().width() * 0.15), int(screen.size().height() * 0.15))
         trash_point = QPoint(0, int(screen.size().height() * 0.65) )
         trash_rect = QRect(trash_point, trash_size)
-        if (trash_rect.contains(position)):
-            desk.remove(event.source())
+        # check if contains trash can dimensions to remove it from the desk
+        if(trash_rect.contains(position)):
+            print("remove resourcegui object", event.source())
             event.source().deleteLater()
-            return
-        event.source().move(position)
-        event.accept()
-            
-
-# ^^^^ drag and drop ^^^^
-
-    def displayButtons(self):
-        for i in range(len(desk)):
-            desk[i].show()
-
-    # :todo: create save functionality in desk to be called from here 
-    def saveButtons(self):
-        # send button values to resource class 
-        # values needed:
-        # filepath: str, location: Tuple[float, float], locked: bool, inscene: bool, cost: int
-        print("printing all button positions")
-        for rg in desk:
-            rg.save()
-            
-
-    def __initInventoryList__(self):
-
-        '''screen = QApplication.primaryScreen()
-        inv_list = QWidget(self)
-        inv_list.resize(int(screen.size().width() * 0.8), int(screen.size().height() * 0.2))
-        inv_list.move(0, int(screen.size().height() * 0.8))
-
-        hbox = QHBoxLayout()
-        group_box = QGroupBox("Inventory")
-        group_box.setStyleSheet("text-align: center; font-size: 10px; font-family: Menlo;")
-
-        for _ in range (0,50):
-            ResourceGui(self._parent, desk).glue_to_gui(hbox)
-
-        group_box.setLayout(hbox)
-        title = "Inventory (" + str(len(inventory)) + ")"
-        group_box.setTitle(title)
-
-        scroll = QScrollArea()
-        scroll.setWidget(group_box)
-        scroll.setWidgetResizable(True)
-
-        layout = QVBoxLayout()
-        layout.addWidget(scroll)
-
-        inv_list.setLayout(layout)'''
+        else:
+            event.source().move(position)
+            event.accept()
+        pass
 
 
     def setColor(self):
+        '''Change the main window's background color.'''
         self.setAutoFillBackground(True)
         p = self.palette()
         color = QColorDialog.getColor()
         p.setColor(self.backgroundRole(), color)
         self.setPalette(p)
+        pass
+
 
     def exitDesk(self):
+        '''Close the application and save the desk contents.'''
         self.close()
-        self.saveButtons()
+        self._dd.save_to_file()
         QApplication.quit()
         return True
-
-
+    pass

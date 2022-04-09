@@ -18,7 +18,6 @@ class Desk:
         self._file = filepath
         self._tlg = TasklistGui(self._root, [])
         self._ilg = Inventory(self._root, [])
-        self._ilg.glue_to_gui()
         self._plg = Pool(self._root, [])
         pass
 
@@ -35,12 +34,21 @@ class Desk:
             # hand off data to tasklist gui
             self._tlg.load(data)
             self._tlg.glue_to_gui()
+            # :todo: hand off data to inventory gui
+            self._ilg.load({})
+            self._ilg.glue_to_gui()
         pass
 
 
     def save_to_file(self) -> None:
         '''Saves the desk's current state to the file.'''
         # :todo:
+        data = {}
+        # self._tlg.save()
+        self._ilg.save()
+
+        # write contents to file
+        # json.dump(data, fp)
         pass
 
 

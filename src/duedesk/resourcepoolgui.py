@@ -27,9 +27,11 @@ class Inventory(QWidget):
         self._layout.addWidget(scroll)
         pass
 
+
     def glue_to_gui(self):
-        for _ in range(0,50):
-            self._inner += [ResourceGui(self._root, self._inner).glue_to_gui(self._hbox)]
+        # add inventory items to the gui
+        for rg in self._inner:
+            rg.glue_to_gui(self._hbox)
 
         self._group_box.setLayout(self._hbox)
         title = "Inventory (" + str(len(self._inner)) + ")"
@@ -51,6 +53,18 @@ class Inventory(QWidget):
             rsc_inv_list += [rg]
 
         self._inner = rsc_inv_list
+
+        # :todo: read from file instead (remove this for-loop)
+        for _ in range(0,50):
+            self._inner += [ResourceGui(self._root, self._inner)]
+        pass
+
+
+    # save the resourcegui's as dictionaries from inventory
+    def save(self):
+        print('saving inventory')
+        for rg in self._inner:
+            print(rg.get_resource().get_filepath())
         pass
     pass
 
