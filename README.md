@@ -41,7 +41,7 @@ $ pip install -e .
 3. Run unit tests locally.
 
 ```
-$ python -m unittest discover due_desk -v -p "*.py"
+$ python -m unittest discover duedesk -v -p "*.py"
 ```
 
 4. Run integration tests locally.
