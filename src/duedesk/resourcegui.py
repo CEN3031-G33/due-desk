@@ -57,7 +57,7 @@ class ResourceGui(QWidget):
         rg._button.move(100,260)
         rg._button.show()
 
-        self._pool += [rg]
+        self._pool._inner += [rg]
         #return rg
         pass
 

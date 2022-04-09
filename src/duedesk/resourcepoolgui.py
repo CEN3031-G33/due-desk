@@ -2,12 +2,47 @@ from .resourcegui import ResourceGui
 from typing import List
 from PyQt5.QtWidgets import *
 
-# items available to put on the desk
-class Inventory(QWidget):
+# everything on the desk
+class Pool(QWidget):
     def __init__(self, root: QMainWindow, inner: List[ResourceGui]):
         super(QWidget, self).__init__(root)
         self._root = root
         self._inner = inner
+        pass
+
+
+    def glue_to_gui(self):
+        # place all ResourceGui's in the window
+        for rsc in self._inner:
+            #rsc.glue_to_gui()
+            rsc.show()
+        pass
+
+
+    def load(self, data: dict):
+        rsc_pool_list = []
+        for v in data.values():
+            rg = ResourceGui(self._root)
+            rg.load(v)
+            rg.get_resource().set_inscene(True)
+            rsc_pool_list += [rg]
+
+        self._inner = rsc_pool_list
+        pass
+
+    def save(self):
+        print('saving pool')
+        for rg in self._inner:
+            rg.save()
+        pass
+    pass
+# items available to put on the desk
+class Inventory(QWidget):
+    def __init__(self, root: QMainWindow, inner: List[ResourceGui], pool: Pool):
+        super(QWidget, self).__init__(root)
+        self._root = root
+        self._inner = inner
+        self._pool = pool
 
         screen = QApplication.primaryScreen()
         self._form_layout = QFormLayout()
@@ -56,7 +91,7 @@ class Inventory(QWidget):
 
         # :todo: read from file instead (remove this for-loop)
         for _ in range(0,50):
-            self._inner += [ResourceGui(self._root, self._inner)]
+            self._inner += [ResourceGui(self._root, self._pool)]
         pass
 
 
@@ -68,32 +103,3 @@ class Inventory(QWidget):
         pass
     pass
 
-
-# everything on the desk
-class Pool(QWidget):
-    def __init__(self, root: QMainWindow, inner: List[ResourceGui]):
-        super(QWidget, self).__init__(root)
-        self._root = root
-        self._inner = inner
-        pass
-
-
-    def glue_to_gui(self):
-        # place all ResourceGui's in the window
-        for rsc in self._inner:
-            #rsc.glue_to_gui()
-            rsc.show()
-        pass
-
-
-    def load(self, data: dict):
-        rsc_pool_list = []
-        for v in data.values():
-            rg = ResourceGui(self._root)
-            rg.load(v)
-            rg.get_resource().set_inscene(True)
-            rsc_pool_list += [rg]
-
-        self._inner = rsc_pool_list
-        pass
-    pass

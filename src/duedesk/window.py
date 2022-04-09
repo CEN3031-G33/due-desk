@@ -39,6 +39,10 @@ class App(QMainWindow):
         self.setCentralWidget(self.table_widget)
         pass
 
+    def drawZen(self):
+        #this method will take the desk from table widget, resize it, and draw it, in addition to the current task, a back button, and starting a timer
+        #disable drag and drop for items
+        pass
 
 class menuScreen(QWidget):
     def __init__(self, parent):

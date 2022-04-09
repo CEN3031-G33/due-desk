@@ -17,8 +17,8 @@ class Desk:
         self._root = root
         self._file = filepath
         self._tlg = TasklistGui(self._root, [])
-        self._ilg = Inventory(self._root, [])
         self._plg = Pool(self._root, [])
+        self._ilg = Inventory(self._root, [], self._plg)
         pass
 
     
@@ -46,6 +46,7 @@ class Desk:
         data = {}
         # self._tlg.save()
         self._ilg.save()
+        self._plg.save()
 
         # write contents to file
         # json.dump(data, fp)
