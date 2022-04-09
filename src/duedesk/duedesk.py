@@ -1,15 +1,15 @@
 # ------------------------------------------------------------------------------
-# Project: DueDesk
-# Module: duedesk
-#
-# Abstract: 
+# Project  : DueDesk
+# Module   : duedesk
+# Abstract : 
 #   The main script called to begin the DueDesk application.
 # ------------------------------------------------------------------------------
-import unittest
-from .task import Task
+from .window import *
 
 def duedesk():
-    print("Welcome to your DueDesk!")
+    app = QApplication(sys.argv)
+    App()
+    sys.exit(app.exec_())
 
 
 def main():
@@ -18,10 +18,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-class TestDueDesk(unittest.TestCase):
-    def test_sample_unit(self):
-        self.assertEqual(1 + 1, 2)
-        pass
-    pass

@@ -18,7 +18,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Local install project
+      - name: Locally install package
         run: pip install -e .
 
       - name: Run unit tests
