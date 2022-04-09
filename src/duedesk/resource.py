@@ -53,10 +53,11 @@ class Resource:
         return r
         pass
 
+      
     def partial_eq(self, other) -> bool:
         '''Evaluates if two `Resource` objects have the same filepaths.'''
         return self._filepath == other._filepath
-
+      
 
     def get_filepath(self) -> str:
         return self._filepath
@@ -110,6 +111,7 @@ class TestResource(unittest.TestCase):
         self.assertEqual(3, r._cost)
         pass
 
+
     def test_to_dict(self):
         r = Resource("file", (1, 2), True, False, 3)
         self.assertEqual(r.to_dict(), 
@@ -121,7 +123,8 @@ class TestResource(unittest.TestCase):
             "cost": "3"
         })
         pass
-    
+
+      
     def test_from_dict(self):
         d = {
             "path": "file", 
@@ -164,8 +167,9 @@ class TestResource(unittest.TestCase):
         r1 = Resource("file", (1.4, 2.2), False, True, -4)
         self.assertTrue(r0.partial_eq(r1))
         self.assertFalse(r0 == r1)
-
-
+        pass
+        
+        
     def test_accessors_modifiers(self):
         r = Resource("file", (1, 2), True, False, 3)
         self.assertEqual(r.get_location()[0], 1)
