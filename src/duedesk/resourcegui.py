@@ -10,7 +10,6 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from .resource import Resource
-#from .window import Button 
 
 class ResourceGui(QWidget):
     def __init__(self, root: QMainWindow, pool):
@@ -24,7 +23,6 @@ class ResourceGui(QWidget):
         self._resource = Resource(self._filepath, (0, 0), False, False, 0)
         self._root = root
         self._pool = pool
-        #self._root.setAcceptDrops(True)
         pass
 
 
@@ -56,14 +54,10 @@ class ResourceGui(QWidget):
         rg._image =  self._image
         rg._button = Button(self._root)
         rg._button.setIcon(self._image)
-        rg._button.move(10,10)
-        #rg.setAcceptDrops(True)
+        rg._button.move(100,260)
         rg._button.show()
 
         self._pool += [rg]
-
-
-
         #return rg
         pass
 
@@ -75,11 +69,13 @@ class ResourceGui(QWidget):
     def get_resource(self) -> Resource:
         return self._resource
 
+
     # method bound to clicking the image for `ResourceGui` object in context of desk
     def move_around_desk(self):
         print('info: moving item around the desk')
         pass
     
+
     def save(self):
         # extract x and y from button and put into resourc
         self.get_resource().set_location((self._button.x(),self._button.y()))

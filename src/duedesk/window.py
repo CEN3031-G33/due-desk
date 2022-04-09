@@ -99,7 +99,7 @@ class MyTableWidget(QWidget):
     def __initTable__(self):
         '''Initialize supportive gui elements around the desk.'''
         # desk background image
-        img_path = root_dir + "/resources/pixel-desk.png" 
+        img_path = root_dir + "/resources/emptydesk.png" 
         c_pixmap = QPixmap(img_path)
         c = QLabel(self)
         screen = QApplication.primaryScreen()
