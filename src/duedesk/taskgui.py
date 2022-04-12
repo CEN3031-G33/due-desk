@@ -47,8 +47,14 @@ class TaskGui(QWidget):
         pass
 
 
+    def get_status_box(self) -> QCheckBox:
+        return self._status_box
+
+
     def save(self) -> dict:
         '''Saves `Task` attributes to a dictionary.'''
+        self._task.set_complete(self._status_box.isChecked())
+        print(self._status_box.isChecked())
         self._task.to_dict()
 
 

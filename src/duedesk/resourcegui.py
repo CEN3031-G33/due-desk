@@ -12,7 +12,7 @@ from PyQt5.QtCore import *
 from .resource import Resource
 
 class ResourceGui(QWidget):
-    def __init__(self, root: QMainWindow, pool):
+    def __init__(self, root: QMainWindow, pool): # pool: Pool
         '''Creates a `ResourceGui` instance.'''
         super(QWidget, self).__init__(root)
         self._button = QPushButton(self)
@@ -27,19 +27,22 @@ class ResourceGui(QWidget):
 
 
     def glue_to_gui(self, layout: QFormLayout):
-        '''Attaches the PyQt5 gui elements to the layout.'''
+        '''Attaches the PyQt5 gui elements to the layout. Ignores `layout` if the resource's `inscene is True.'''
         if self._resource.is_inscene() == True:
-            self._button.clicked.connect(self.move_around_desk)
+            self._button.clicked.connect(self.move_around_desk) # :todo: maybe remove line?
             self._button.move(self._resource.get_location()[0], self._resource.get_location()[1])
         else:
             self._button.clicked.connect(self.bring_to_desk)
-        layout.addWidget(self._button)
+            layout.addWidget(self._button)
+        self._button.show()
         pass
 
 
     def load(self, data: dict) -> None:
         '''Loads `Resource` attributes from a dictionary into existing instance.'''
         self._resource = Resource.from_dict(data)
+        if self._resource.is_inscene() == True:
+            self._button = Button(self._root, self)
         self._image = QIcon(self._resource.get_filepath())
         self._button.setIcon(self._image)
         pass
@@ -51,19 +54,24 @@ class ResourceGui(QWidget):
         # :todo: make a copy/new button onto desk (maybe handled by upper-level glue for resource pool)
         rg = ResourceGui(self._root, self._pool)
         rg.get_resource().set_filepath(self._filepath)
+        rg.get_resource().set_inscene(True)
         rg._image =  self._image
-        rg._button = Button(self._root)
+        rg._button = Button(self._root, self)
         rg._button.setIcon(self._image)
         rg._button.move(100,260)
         rg._button.show()
 
-        self._pool._inner += [rg]
+        self._pool.add(rg)
         #return rg
         pass
 
 
     def show(self):
         self._button.show()
+
+
+    def remove_from_desk(self):
+        self._pool._inner.remove(self)
 
 
     def get_resource(self) -> Resource:
@@ -76,24 +84,20 @@ class ResourceGui(QWidget):
         pass
     
 
-    def save(self):
-        # extract x and y from button and put into resourc
+    def save(self) -> dict:
+        '''Serializes the resource object. This method updates the resource's location before
+        serialization.'''
+        # extract x and y from button and put into resource
         self.get_resource().set_location((self._button.x(),self._button.y()))
-        print(self.get_resource().get_location())
-        
-        pass
-
-    
-
-
-class TestResourceGui(unittest.TestCase):
+        # print(self.get_resource().get_location())
+        return self.get_resource().to_dict()
     pass
 
+
 class Button(QPushButton):
-    
-    
-    def __init__(self, parent):
+    def __init__(self, parent: QMainWindow, rg: ResourceGui): # pool is list wrapper `Pool`
         super().__init__(parent)
+        self._super_rg = rg
         self.setAcceptDrops(True)
         screen = QApplication.primaryScreen()
         #QButton_icon = QIcon(root_dir + "/resources/pc.png")
@@ -102,10 +106,12 @@ class Button(QPushButton):
         self.setStyleSheet("border: none;")
         self.resize(QSize(int(screen.size().width() * 0.1), int(screen.size().height() * 0.1)))
       
-    
+
+    def tell_rg_to_remove(self) -> None:
+        self._super_rg.remove_from_desk()
+        pass
 
 
-    
     def mouseMoveEvent(self, event):
         # if left mouse button is clicked 
         if event.buttons() == Qt.LeftButton:
@@ -125,3 +131,8 @@ class Button(QPushButton):
 
             # give drag the mouse transformation 
             dropAction = drag.exec_(Qt.MoveAction)
+        pass
+
+
+class TestResourceGui(unittest.TestCase):
+    pass

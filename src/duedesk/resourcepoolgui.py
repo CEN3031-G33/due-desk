@@ -1,3 +1,4 @@
+from duedesk.resourcepool import Resourcepool
 from .resourcegui import ResourceGui
 from typing import List
 from PyQt5.QtWidgets import *
@@ -14,15 +15,21 @@ class Pool(QWidget):
     def glue_to_gui(self):
         # place all ResourceGui's in the window
         for rsc in self._inner:
-            #rsc.glue_to_gui()
-            rsc.show()
+            # assumes all resources are `inscene`
+            rsc.glue_to_gui(None)
+        pass
+
+
+    def add(self, rg: ResourceGui) -> None:
+        '''Adds a new resource to the desk table.'''
+        self._inner += [rg]
         pass
 
 
     def load(self, data: dict):
         rsc_pool_list = []
         for v in data.values():
-            rg = ResourceGui(self._root)
+            rg = ResourceGui(self._root, self)
             rg.load(v)
             rg.get_resource().set_inscene(True)
             rsc_pool_list += [rg]
@@ -30,12 +37,16 @@ class Pool(QWidget):
         self._inner = rsc_pool_list
         pass
 
-    def save(self):
+
+    def save(self) -> dict:
+        data = {}
         print('saving pool')
-        for rg in self._inner:
-            rg.save()
-        pass
+        for (i,rg) in enumerate(self._inner):
+            data[str(i)] = rg.save()
+        return data
     pass
+
+
 # items available to put on the desk
 class Inventory(QWidget):
     def __init__(self, root: QMainWindow, inner: List[ResourceGui], pool: Pool):
@@ -82,24 +93,21 @@ class Inventory(QWidget):
         # set to false for inscene
         rsc_inv_list = []
         for v in data.values():
-            rg = ResourceGui(self._root)
+            rg = ResourceGui(self._root, self._pool) # pool is a list wrapper
             rg.load(v)
             rg.get_resource().set_inscene(False)
             rsc_inv_list += [rg]
 
         self._inner = rsc_inv_list
-
-        # :todo: read from file instead (remove this for-loop)
-        for _ in range(0,50):
-            self._inner += [ResourceGui(self._root, self._pool)]
         pass
-
 
     # save the resourcegui's as dictionaries from inventory
-    def save(self):
+    def save(self) -> dict:
+        data = dict()
         print('saving inventory')
-        for rg in self._inner:
-            print(rg.get_resource().get_filepath())
-        pass
+        for (i,rg) in enumerate(self._inner):
+            data[str(i)] = rg.save()
+        return data
+
     pass
 

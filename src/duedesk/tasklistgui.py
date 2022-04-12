@@ -78,6 +78,17 @@ class TasklistGui(QWidget):
         self._inner = tlg._inner
         self._tl = tlg._tl
         pass
+
+
+    def save(self) -> dict:
+        # update all the task's with the gui information about status box
+        for task in self._tl._inner: 
+            task.set_complete(self._inner[task.get_key()].get_status_box().isChecked())
+            if task.is_complete():
+                # :todo: remove from tl
+                pass
+
+        return self._tl.to_dict()
     pass
 
 
