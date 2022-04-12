@@ -1,5 +1,3 @@
-from numpy import true_divide
-from duedesk.resourcepool import Resourcepool
 from .resourcegui import ResourceGui
 from typing import List
 from PyQt5.QtWidgets import *

@@ -7,7 +7,6 @@
 # ------------------------------------------------------------------------------
 import unittest
 from .taskgui import TaskGui
-from .task import Task
 from .tasklist import Tasklist
 from typing import List
 from PyQt5.QtWidgets import *
