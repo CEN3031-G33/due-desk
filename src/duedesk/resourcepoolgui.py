@@ -26,6 +26,15 @@ class Pool(QWidget):
         pass
 
 
+    def remove(self, rg: ResourceGui) -> None:
+        '''Removes a resource from the desk table using full_eq comparison.'''
+        for item in self._inner:
+            if rg.get_resource().full_eq(item.get_resource()) == True:
+                self._inner.remove(item)
+                break
+        pass
+
+
     def load(self, data: dict):
         rsc_pool_list = []
         for v in data.values():

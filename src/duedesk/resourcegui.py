@@ -20,6 +20,7 @@ class ResourceGui(QWidget):
         self._filepath = "./resources/util/unknown.png"
         self._image = QIcon(self._filepath)
         self._button.setIcon(self._image)
+        self._button.resize(QSize(64, 64))
         self._resource = Resource(self._filepath, (0, 0), False, False, 0)
         self._root = root
         self._pool = pool
@@ -34,6 +35,7 @@ class ResourceGui(QWidget):
         else:
             self._button.clicked.connect(self.bring_to_desk)
             layout.addWidget(self._button)
+        self._button.resize(QSize(64, 64))
         self._button.show()
         pass
 
@@ -80,10 +82,6 @@ class ResourceGui(QWidget):
         pass
 
 
-    def remove_from_desk(self):
-        self._pool._inner.remove(self)
-
-
     def get_resource(self) -> Resource:
         return self._resource
 
@@ -109,17 +107,15 @@ class DragNDropButton(QPushButton):
         super().__init__(parent)
         self._super_rg = rg
         self.setAcceptDrops(True)
-        screen = QApplication.primaryScreen()
-        self.setIconSize(QSize(int(screen.size().width() * 0.1), int(screen.size().height() * 0.1)))
         self.setStyleSheet("border: none;")
-        self.resize(QSize(int(screen.size().width() * 0.1), int(screen.size().height() * 0.1)))
+        self.setIconSize(QSize(64, 64))
+        self.resize(QSize(64, 64))
         pass
 
 
-    def tell_rg_to_remove(self) -> None:
-        '''Calls upon the super object (resourcegui) to remove itself from the list of desk items.'''
-        self._super_rg.remove_from_desk()
-        pass
+    def get_rg(self) -> ResourceGui:
+        self._super_rg.get_resource().set_location((self.x(),self.y()))
+        return self._super_rg
 
 
     def mouseMoveEvent(self, event):

@@ -151,8 +151,8 @@ class MyTableWidget(QWidget):
         trash_rect = QRect(trash_point, trash_size)
         # check if contains trash can dimensions to remove it from the desk
         if(trash_rect.contains(position)):
-            print("remove resourcegui object", event.source())
-            event.source().tell_rg_to_remove()
+            # print("remove resourcegui object", event.source())
+            self._dd.get_pool().remove(event.source().get_rg())
             event.source().deleteLater()
         else:
             event.source().move(position)

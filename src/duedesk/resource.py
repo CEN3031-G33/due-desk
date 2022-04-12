@@ -69,6 +69,12 @@ class Resource:
 
     def is_locked(self) -> bool:
         return self._locked
+
+    # :todo: add test
+    def full_eq(self, other) -> bool:
+        return self.partial_eq(other) and \
+            self._location == other._location and \
+            self._cost == other._cost
     
 
     def is_inscene(self) -> bool:

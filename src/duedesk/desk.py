@@ -48,6 +48,10 @@ class Desk:
         pass
 
 
+    def get_pool(self) -> Pool:
+        return self._plg
+
+
     def save_to_file(self) -> None:
         '''Saves the desk's current state to the file.'''
         data = {}
