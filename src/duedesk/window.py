@@ -6,14 +6,14 @@ from PyQt5.QtWidgets import *
 import webbrowser
 from .desk import Desk
 
-root_dir = os.path.realpath(os.path.join(os.path.dirname(__file__), '../..'))
 root_dir = '.'
-desk = []
+util_dir = root_dir + '/resources/util'
+desk_dir = root_dir + '/resources/desk'
 
 class App(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.title = 'Due Deskdue'
+        self.title = 'Due Desk'
         self.left = 0
         self.top = 0
         screen = QApplication.primaryScreen()
@@ -44,6 +44,7 @@ class App(QMainWindow):
         #disable drag and drop for items
         pass
 
+
 class menuScreen(QWidget):
     def __init__(self, parent):
         super(QWidget, self).__init__(parent)
@@ -53,7 +54,7 @@ class menuScreen(QWidget):
         p.setColor(self.backgroundRole(), color)
         self.setPalette(p)
 
-        img_path = root_dir + "/resources/title.png" 
+        img_path = util_dir+"/title.png" 
         c_pixmap = QPixmap(img_path)
         c = QLabel(self)
         screen = QApplication.primaryScreen()
@@ -90,7 +91,7 @@ class MyTableWidget(QWidget):
         super(QWidget, self).__init__(parent)
 
         # boot up the due desk!
-        self._dd = Desk('./tests/data.json', parent)
+        self._dd = Desk(root_dir+'/duedesk.json', parent)
         self._dd.load_from_file()
 
         self._parent = parent
@@ -103,7 +104,7 @@ class MyTableWidget(QWidget):
     def __initTable__(self):
         '''Initialize supportive gui elements around the desk.'''
         # desk background image
-        img_path = root_dir + "/resources/emptydesk.png" 
+        img_path = desk_dir+"/emptydesk.png" 
         c_pixmap = QPixmap(img_path)
         c = QLabel(self)
         screen = QApplication.primaryScreen()
@@ -113,7 +114,7 @@ class MyTableWidget(QWidget):
         c.setScaledContents(True)
 
         # background paint color
-        paint_path = root_dir + "/resources/paint-bucket.png"
+        paint_path = util_dir+"/paint-bucket.png"
         paint_icon = QIcon(paint_path)
         paint = QPushButton(self)
         paint.setIcon(paint_icon)
@@ -128,7 +129,7 @@ class MyTableWidget(QWidget):
         exit_button.clicked.connect(self.exitDesk)
 
         # trash can
-        trash_path = root_dir + "/resources/trash.png"
+        trash_path = util_dir+"/trash.png"
         trash_widget = QLabel(self)
         trash_widget_pixmap = QPixmap(trash_path)
         trash_widget.resize(int(screen.size().width() * 0.15), int(screen.size().height() * 0.15))

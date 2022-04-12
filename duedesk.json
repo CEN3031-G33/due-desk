@@ -1,14 +1,14 @@
 {
  "inventory": {
   "0": {
-   "path": "./resources/pc.png",
+   "path": "./resources/items/pc.png",
    "pixelmap": "(9, 30)",
    "locked": "False",
    "inscene": "False",
    "cost": "0"
   },
   "1": {
-   "path": "./resources/pc.png",
+   "path": "./resources/util/unknown.png",
    "pixelmap": "(121, 30)",
    "locked": "False",
    "inscene": "False",
@@ -94,38 +94,38 @@
  },
  "desk": {
   "0": {
-   "path": "./resources/pc.png",
-   "pixelmap": "(365, 194)",
+   "path": "./resources/items/pc.png",
+   "pixelmap": "(414, 376)",
    "locked": "False",
    "inscene": "True",
    "cost": "0"
   },
   "1": {
-   "path": "./resources/pc.png",
-   "pixelmap": "(510, 205)",
+   "path": "./resources/items/pc.png",
+   "pixelmap": "(535, 271)",
    "locked": "False",
-   "inscene": "True",
+   "inscene": "False",
    "cost": "0"
   },
   "2": {
-   "path": "./resources/pc.png",
-   "pixelmap": "(103, 204)",
+   "path": "./resources/items/pc.png",
+   "pixelmap": "(320, 261)",
    "locked": "False",
-   "inscene": "True",
+   "inscene": "False",
    "cost": "0"
   },
   "3": {
-   "path": "./resources/pc.png",
-   "pixelmap": "(708, 199)",
+   "path": "./resources/items/pc.png",
+   "pixelmap": "(688, 293)",
    "locked": "False",
-   "inscene": "True",
+   "inscene": "False",
    "cost": "0"
   },
   "4": {
-   "path": "./resources/pc.png",
-   "pixelmap": "(260, 247)",
+   "path": "./resources/items/pc.png",
+   "pixelmap": "(291, 393)",
    "locked": "False",
-   "inscene": "True",
+   "inscene": "False",
    "cost": "0"
   }
  },

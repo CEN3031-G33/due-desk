@@ -17,7 +17,7 @@ class ResourceGui(QWidget):
         super(QWidget, self).__init__(root)
         self._button = QPushButton(self)
         self._button.setIconSize(QSize(64, 64))
-        self._filepath = "./resources/pc.png"
+        self._filepath = "./resources/util/unknown.png"
         self._image = QIcon(self._filepath)
         self._button.setIcon(self._image)
         self._resource = Resource(self._filepath, (0, 0), False, False, 0)
@@ -27,8 +27,8 @@ class ResourceGui(QWidget):
 
 
     def glue_to_gui(self, layout: QFormLayout):
-        '''Attaches the PyQt5 gui elements to the layout. Ignores `layout` if the resource's `inscene is True.'''
-        if self._resource.is_inscene() == True:
+        '''Attaches the PyQt5 gui elements to the layout. If `layout` is `None`, the resource is not added to QFormLayout.'''
+        if layout == None:
             self._button.clicked.connect(self.move_around_desk) # :todo: maybe remove line?
             self._button.move(self._resource.get_location()[0], self._resource.get_location()[1])
         else:
@@ -37,37 +37,47 @@ class ResourceGui(QWidget):
         self._button.show()
         pass
 
+    
+    def update_icon(self):
+        '''Verifies the resource's filepath is valid before trying to display. If its invalid, 
+        the icon is set to an '?' image. Updates the `self._button`'s icon.'''
+        # verify the filepath is valid
+        if self.get_resource().is_filepath_valid() == True:
+            self._image = QIcon(self.get_resource().get_filepath())
+        else:
+            self._image = QIcon('./resources/util/unknown.png')
+        self._button.setIcon(self._image)
+        pass
 
-    def load(self, data: dict) -> None:
+
+    def load(self, data: dict, draggable: bool) -> None:
         '''Loads `Resource` attributes from a dictionary into existing instance.'''
         self._resource = Resource.from_dict(data)
-        if self._resource.is_inscene() == True:
-            self._button = Button(self._root, self)
-        self._image = QIcon(self._resource.get_filepath())
+        # use draggable button (for desk table)
+        if draggable:
+            self._button = DragNDropButton(self._root, self)
+        self.update_icon()
         self._button.setIcon(self._image)
         pass
 
 
     # method bound to clicking the image for `ResourceGui` object in context of inventory
     def bring_to_desk(self):
+        if self.get_resource().is_filepath_valid() == False:
+            print('error: cannot bring item to desk due to invalid filepath ', self.get_resource().get_filepath())
+            return
         print('info: bringing in inventory item to the desk')
         # :todo: make a copy/new button onto desk (maybe handled by upper-level glue for resource pool)
         rg = ResourceGui(self._root, self._pool)
-        rg.get_resource().set_filepath(self._filepath)
-        rg.get_resource().set_inscene(True)
-        rg._image =  self._image
-        rg._button = Button(self._root, self)
-        rg._button.setIcon(self._image)
+        rg._resource = self.get_resource()
+        #rg.get_resource().set_inscene(True)
+        rg._button = DragNDropButton(self._root, self)
+        rg.update_icon()
         rg._button.move(100,260)
         rg._button.show()
 
         self._pool.add(rg)
-        #return rg
         pass
-
-
-    def show(self):
-        self._button.show()
 
 
     def remove_from_desk(self):
@@ -94,20 +104,20 @@ class ResourceGui(QWidget):
     pass
 
 
-class Button(QPushButton):
+class DragNDropButton(QPushButton):
     def __init__(self, parent: QMainWindow, rg: ResourceGui): # pool is list wrapper `Pool`
         super().__init__(parent)
         self._super_rg = rg
         self.setAcceptDrops(True)
         screen = QApplication.primaryScreen()
-        #QButton_icon = QIcon(root_dir + "/resources/pc.png")
-
         self.setIconSize(QSize(int(screen.size().width() * 0.1), int(screen.size().height() * 0.1)))
         self.setStyleSheet("border: none;")
         self.resize(QSize(int(screen.size().width() * 0.1), int(screen.size().height() * 0.1)))
-      
+        pass
+
 
     def tell_rg_to_remove(self) -> None:
+        '''Calls upon the super object (resourcegui) to remove itself from the list of desk items.'''
         self._super_rg.remove_from_desk()
         pass
 
@@ -115,22 +125,17 @@ class Button(QPushButton):
     def mouseMoveEvent(self, event):
         # if left mouse button is clicked 
         if event.buttons() == Qt.LeftButton:
-            
             # create a mime object
             mimeData = QMimeData()
-            
             # create a qdrag object
             drag = QDrag(self)
-
             # set mime object as the drag mime data 
             drag.setMimeData(mimeData)
-
             pixmap = QPixmap(self.size())
             self.render(pixmap)
             drag.setPixmap(pixmap)
-
             # give drag the mouse transformation 
-            dropAction = drag.exec_(Qt.MoveAction)
+            _ = drag.exec_(Qt.MoveAction)
         pass
 
 

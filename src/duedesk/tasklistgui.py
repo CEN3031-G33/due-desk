@@ -81,6 +81,7 @@ class TasklistGui(QWidget):
 
 
     def save(self) -> dict:
+        print('info: saving tasks...')
         # update all the task's with the gui information about status box
         for task in self._tl._inner: 
             task.set_complete(self._inner[task.get_key()].get_status_box().isChecked())

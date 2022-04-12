@@ -1,3 +1,4 @@
+from numpy import true_divide
 from duedesk.resourcepool import Resourcepool
 from .resourcegui import ResourceGui
 from typing import List
@@ -15,7 +16,6 @@ class Pool(QWidget):
     def glue_to_gui(self):
         # place all ResourceGui's in the window
         for rsc in self._inner:
-            # assumes all resources are `inscene`
             rsc.glue_to_gui(None)
         pass
 
@@ -30,8 +30,7 @@ class Pool(QWidget):
         rsc_pool_list = []
         for v in data.values():
             rg = ResourceGui(self._root, self)
-            rg.load(v)
-            rg.get_resource().set_inscene(True)
+            rg.load(v, True)
             rsc_pool_list += [rg]
 
         self._inner = rsc_pool_list
@@ -39,8 +38,8 @@ class Pool(QWidget):
 
 
     def save(self) -> dict:
+        print('info: saving pool...')
         data = {}
-        print('saving pool')
         for (i,rg) in enumerate(self._inner):
             data[str(i)] = rg.save()
         return data
@@ -94,7 +93,7 @@ class Inventory(QWidget):
         rsc_inv_list = []
         for v in data.values():
             rg = ResourceGui(self._root, self._pool) # pool is a list wrapper
-            rg.load(v)
+            rg.load(v, False)
             rg.get_resource().set_inscene(False)
             rsc_inv_list += [rg]
 
@@ -104,7 +103,7 @@ class Inventory(QWidget):
     # save the resourcegui's as dictionaries from inventory
     def save(self) -> dict:
         data = dict()
-        print('saving inventory')
+        print('info: saving inventory...')
         for (i,rg) in enumerate(self._inner):
             data[str(i)] = rg.save()
         return data
