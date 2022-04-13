@@ -8,6 +8,7 @@
 import unittest
 from .taskgui import TaskGui
 from .tasklist import Tasklist
+from .task import Task
 from typing import List
 from PyQt5.QtWidgets import *
 
@@ -25,6 +26,9 @@ class TasklistGui(QWidget):
             pass
 
         self._form_layout = QFormLayout()
+        button = QPushButton("Add Task")
+        button.clicked.connect(self.addTask)
+        self._form_layout.addRow(button)
         # configure group box gui element
         self._group_box = QGroupBox("")
         self._group_box.setStyleSheet("text-align: center; font-size: 10px; font-family: Menlo;")
@@ -54,6 +58,13 @@ class TasklistGui(QWidget):
         self.show()
         pass
 
+    def addTask(self):
+        subject, deadline = self._root.drawAddTask()
+        t = Task(subject, deadline)
+        tg = TaskGui(self._root)
+        tg.load(t.to_dict())
+        self.add(tg)
+        self.glue_to_gui()
 
     def add(self, tg: TaskGui) -> bool:
         '''Adds a new `TaskGui` to the list and resorts the list. Returns `false` if a task with the same

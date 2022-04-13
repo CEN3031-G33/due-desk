@@ -39,6 +39,11 @@ class App(QMainWindow):
         self.setCentralWidget(self.table_widget)
         pass
 
+    def drawAddTask(self):
+        name, done1 = QInputDialog.getText(self, 'Input Dialog', 'Enter Task name:')
+        deadline, done2 = QInputDialog.getText(self, 'Input Dialog', 'Enter Deadline (Format YYYY-MM-DD):')
+        return name, deadline
+
     def drawZen(self):
         #this method will take the desk from table widget, resize it, and draw it, in addition to the current task, a back button, and starting a timer
         #disable drag and drop for items
@@ -79,7 +84,6 @@ class menuScreen(QWidget):
         self.close()
         parent.drawTable()
         return True
-
 
     def help(self):
         webbrowser.open('https://github.com/CEN3031-G33/due-desk')

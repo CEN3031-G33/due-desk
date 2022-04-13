@@ -18,6 +18,7 @@ class TaskGui(QWidget):
         # configure the task's gui label
         self._label = QLabel(self._task.get_subject())
         self._deadline_label = QLabel("Due: "+str(self._task.get_deadline()))
+        self._minutes_label = QLabel("Minutes Worked: " + str(self._task.get_minutes()))
         # configure the task's 'is complete' checkbox
         self._status_box = QCheckBox("")
         self._status_box.setChecked(self._task.is_complete())
@@ -28,15 +29,15 @@ class TaskGui(QWidget):
 
 
     def glue_to_gui(self, layout: QFormLayout):
-        '''Adds the appropriate gui elements for this task to the gui.'''
+        '''Adds the appropriate gui elements for this task to the gui. TODO: create one widget that is glued to the gui'''
         sublay = QFormLayout()
         sublay.addRow(self._begin_btn, self._status_box)
         layout.addRow(self._label)
         layout.addRow(self._deadline_label, sublay)
+        layout.addRow(self._minutes_label)
         layout.addRow(QLabel('-'*30))
         pass
-
-
+    
     def load(self, data: dict):
         '''Loads `Task` attributes from a dictionary into existing instance.'''
         self._task = Task.from_dict(data)
