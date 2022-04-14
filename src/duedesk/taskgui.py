@@ -82,6 +82,7 @@ class TaskGui(QWidget):
             self._begin_btn.setText("End")
             self._trunner.enable()
             self._is_running = True
+            self._status_box.setCheckable(False) # cannot say done with task if still working on it!
         # release the lock on the task runner
         elif self._is_running == True:
             print('info: ending zen mode for task', self._task.get_subject())
@@ -92,5 +93,6 @@ class TaskGui(QWidget):
             # update the minutes gui element
             self._minutes_label.setText("Minutes Worked: " + str(round(self._task.get_minutes(),2)))
             self._is_running = False
+            self._status_box.setCheckable(True) # allow user to mark as complete
         pass
     pass
