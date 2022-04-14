@@ -9,6 +9,7 @@ import unittest
 from .taskgui import TaskGui
 from .tasklist import Tasklist
 from .task import Task
+from .deadline import Deadline
 from typing import List
 from PyQt5.QtWidgets import *
 
@@ -60,11 +61,11 @@ class TasklistGui(QWidget):
 
     def addTask(self):
         subject, deadline = self._root.drawAddTask()
-        t = Task(subject, deadline)
+        t = Task(subject, Deadline.from_str(deadline))
         tg = TaskGui(self._root)
         tg.load(t.to_dict())
         self.add(tg)
-        self.glue_to_gui()
+        tg.glue_to_gui(self._form_layout) #currently pastes to bottom, unsorted (Visually), is sorted internally
 
     def add(self, tg: TaskGui) -> bool:
         '''Adds a new `TaskGui` to the list and resorts the list. Returns `false` if a task with the same
