@@ -2,21 +2,24 @@
 # Project  : DueDesk
 # Module   : TasklistGui
 # Abstract : 
-#   A TasklistGui is composed of gui related materials and the business logic for
-#   a `Tasklist`.
+#   A TasklistGui is composed of gui related materials and the business logic 
+#   for a `Tasklist`.
 # ------------------------------------------------------------------------------
-import unittest
 from .taskgui import TaskGui
 from .tasklist import Tasklist
 from .task import Task
 from typing import List
 from PyQt5.QtWidgets import *
+from .taskrunner import Taskrunner
 
 class TasklistGui(QWidget):
     def __init__(self, root: QMainWindow, inner: List[TaskGui]):
         super(QWidget, self).__init__(root)
         # store root window for future use in gluing to gui
         self._root = root
+
+        self._task_runner = Taskrunner(False)
+
         # provide mapping between a `Tasklist` and the storage of `TaskGui` objects
         self._tl = Tasklist([]) 
         self._inner = {}
@@ -74,6 +77,7 @@ class TasklistGui(QWidget):
         # ensure no similiar task exists
         tg = TaskGui(self._root)
         tg.load(t.to_dict())
+        tg.track_runner(self._task_runner)
         success = self.add(tg)
         if success == False:
             QErrorMessage(self._root).showMessage("A similiar task already exists")
@@ -97,6 +101,7 @@ class TasklistGui(QWidget):
         subject and same deadline already exists.'''
         if self._tl.add(tg.get_task()) == True:
             # use subject and deadline as unique key to store `TaskGui` 
+            tg.track_runner(self._task_runner)
             self._inner[tg.get_task().get_key()] = tg
             return True
         return False
@@ -108,6 +113,7 @@ class TasklistGui(QWidget):
         for v in data.values():
             tg = TaskGui(self._root)
             tg.load(v)
+            tg.track_runner(self._task_runner)
             taskguis += [tg]
 
         tlg = TasklistGui(self._root, taskguis)
@@ -123,9 +129,4 @@ class TasklistGui(QWidget):
             task.set_complete(self._inner[task.get_key()].get_status_box().isChecked())
         # serialize logic
         return self._tl.to_dict()
-    pass
-
-
-class TestTasklistGui(unittest.TestCase):
-    # :todo: create tests
     pass

@@ -1,9 +1,16 @@
+# ------------------------------------------------------------------------------
+# Project  : DueDesk
+# Module   : resourcepoolgui
+# Abstract : 
+#   Resourcepoolgui's are used to store resources in two areas: desk table 
+#   (pool) and the desk inventory (inventory). Manages Resourcegui objects.
+# -----------------------------------------------------------------------------
 from .resourcegui import ResourceGui
 from typing import List
 from PyQt5.QtWidgets import *
 
-# everything on the desk
 class Pool(QWidget):
+    '''Maintains items currently on the desk table.'''
     def __init__(self, root: QMainWindow, inner: List[ResourceGui]):
         super(QWidget, self).__init__(root)
         self._root = root
@@ -53,8 +60,8 @@ class Pool(QWidget):
     pass
 
 
-# items available to put on the desk
 class Inventory(QWidget):
+    '''Maintains items available for the desk table.'''
     def __init__(self, root: QMainWindow, inner: List[ResourceGui], pool: Pool):
         super(QWidget, self).__init__(root)
         self._root = root
@@ -94,10 +101,10 @@ class Inventory(QWidget):
         pass
 
 
-    # handle dups & doesn't care positions
     def load(self, data: dict):
         # set to false for inscene
         rsc_inv_list = []
+        # :todo: handle dups & doesn't care positions
         for v in data.values():
             rg = ResourceGui(self._root, self._pool) # pool is a list wrapper
             rg.load(v, False)
@@ -107,13 +114,12 @@ class Inventory(QWidget):
         self._inner = rsc_inv_list
         pass
 
-    # save the resourcegui's as dictionaries from inventory
+
     def save(self) -> dict:
+        '''Saves the Resourcegui's as dictionaries from inventory.'''
         data = dict()
         print('info: saving inventory...')
         for (i,rg) in enumerate(self._inner):
             data[str(i)] = rg.save()
         return data
-
     pass
-

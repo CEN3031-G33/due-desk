@@ -1,3 +1,10 @@
+# ------------------------------------------------------------------------------
+# Project  : DueDesk
+# Module   : dragdrop
+# Abstract : 
+#   Experimental module for getting the drag and drop feature to work. This
+#   module is not a part of the main `DueDesk` application.
+# ------------------------------------------------------------------------------
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton
 from PyQt5.QtCore import Qt, QMimeData
@@ -29,7 +36,6 @@ class Button(QPushButton):
             dropAction = drag.exec_(Qt.MoveAction)
 
 
-
 #### application template ####
 class AppDemo(QWidget):
     def __init__(self):
@@ -55,6 +61,7 @@ class AppDemo(QWidget):
         #print(self.button.x(), self.button.y())
         self.savePosition(self.button.x(),self.button.y())
         event.accept()
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

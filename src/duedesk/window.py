@@ -1,4 +1,10 @@
-
+# ------------------------------------------------------------------------------
+# Project  : DueDesk
+# Module   : window
+# Abstract : 
+#   Window is the top-level GUI frame capable of drawing different screens and
+#   menus. It is in charge of creating the top-level glue `Desk` instance.
+# ------------------------------------------------------------------------------
 import os, sys
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *

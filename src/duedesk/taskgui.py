@@ -5,10 +5,10 @@
 #   A TaskGui is composed of gui related materials and the business logic for
 #   a `Task`.
 # ------------------------------------------------------------------------------
-import unittest
 from .task import Task
 from .deadline import Deadline
 from PyQt5.QtWidgets import *
+from .taskrunner import Taskrunner
 
 class TaskGui(QWidget):
     def __init__(self, root: QMainWindow):
@@ -18,15 +18,23 @@ class TaskGui(QWidget):
         # configure the task's gui label
         self._label = QLabel(self._task.get_subject())
         self._deadline_label = QLabel("Due: "+str(self._task.get_deadline()))
-        self._minutes_label = QLabel("Minutes Worked: " + str(self._task.get_minutes()))
+        self._minutes_label = QLabel("Minutes Worked: " + str(round(self._task.get_minutes(),2)))
         # configure the task's 'is complete' checkbox
         self._status_box = QCheckBox("")
         self._status_box.setChecked(self._task.is_complete())
         # configure the task's gui button
         self._begin_btn = QPushButton("Start")
-        self._begin_btn.clicked.connect(self.begin_task)
+        self._begin_btn.clicked.connect(self.toggle_task)
+        # internal instance variable to remember if we are currently the task with lock on timer
+        self._is_running = False
         pass
 
+
+    def track_runner(self, tr: Taskrunner):
+        '''Remember the task runner.'''
+        self._trunner = tr
+        pass
+    
 
     def glue_to_gui(self, layout: QFormLayout, row: int):
         '''Adds the appropriate gui elements for this task to the gui. TODO: create one widget that is glued to the gui'''
@@ -39,6 +47,7 @@ class TaskGui(QWidget):
         layout.insertRow(row + 3, QLabel('-'*30))
         pass
     
+
     def load(self, data: dict):
         '''Loads `Task` attributes from a dictionary into existing instance.'''
         self._task = Task.from_dict(data)
@@ -46,6 +55,7 @@ class TaskGui(QWidget):
         self._label.setText(self._task.get_subject())
         self._deadline_label.setText("Due: "+str(self._task.get_deadline()))
         self._status_box.setChecked(self._task.is_complete())
+        self._minutes_label.setText("Minutes Worked: " + str(round(self._task.get_minutes(),2)))
         pass
 
 
@@ -64,12 +74,23 @@ class TaskGui(QWidget):
         return self._task
 
 
-    # method bound to clicking 'start' button for `TaskGui` object
-    def begin_task(self):
-        print('info: entering zen mode for task', self._task.get_subject())
+    def toggle_task(self):
+        '''Handles starting/stopping task timer and logging new minutes.'''
+        # lock the task runner to this task
+        if self._trunner.is_running() == False:
+            print('info: entering zen mode for task', self._task.get_subject())
+            self._begin_btn.setText("End")
+            self._trunner.enable()
+            self._is_running = True
+        # release the lock on the task runner
+        elif self._is_running == True:
+            print('info: ending zen mode for task', self._task.get_subject())
+            self._begin_btn.setText("Start")
+            working = self._trunner.disable()
+            # store the worked minutes
+            self._task.add_minutes(working)
+            # update the minutes gui element
+            self._minutes_label.setText("Minutes Worked: " + str(round(self._task.get_minutes(),2)))
+            self._is_running = False
         pass
-    pass
-
-
-class TestTaskGui(unittest.TestCase):
     pass

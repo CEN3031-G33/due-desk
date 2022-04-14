@@ -5,7 +5,6 @@
 #   The desk is in charge of loading/storing the resources on its desk, and
 #   managing the available tasks. 
 # ------------------------------------------------------------------------------
-import unittest
 import json, os
 from .tasklistgui import TasklistGui
 from .resourcepoolgui import *
@@ -48,10 +47,6 @@ class Desk:
         pass
 
 
-    def get_pool(self) -> Pool:
-        return self._plg
-
-
     def save_to_file(self) -> None:
         '''Saves the desk's current state to the file.'''
         data = {}
@@ -63,18 +58,14 @@ class Desk:
         pass
 
 
+    def get_pool(self) -> Pool:
+        return self._plg
+
+
     def set_file(self, f: str) -> None:
         self._file = f
 
 
     def get_file(self) -> str:
         return self._file
-    pass
-
-
-class TestDesk(unittest.TestCase):
-    def test_new(self):
-        #d = Desk(None, "./tests/data.json")
-        #d.load_from_file()
-        pass
     pass
