@@ -9,7 +9,6 @@ import unittest
 from .taskgui import TaskGui
 from .tasklist import Tasklist
 from .task import Task
-from .deadline import Deadline
 from typing import List
 from PyQt5.QtWidgets import *
 
@@ -46,7 +45,7 @@ class TasklistGui(QWidget):
 
     def glue_to_gui(self):
         '''Adds and displays the appropriate gui elements for the `Tasklist` to the gui.'''
-        self._group_box.setTitle("My Tasks ("+str(len(self._tl))+")")
+        self._group_box.setTitle("My Tasks ("+str(self._tl.get_amt_todo())+")")
         screen = QApplication.primaryScreen()
         self.resize(int(screen.size().width() * 0.2), int(screen.size().height()))
         self.move(int(screen.size().width() * 0.8), 0)
@@ -55,7 +54,8 @@ class TasklistGui(QWidget):
         # note: make `Tasklist` iterable (implement new class and __iter__)
         # https://thispointer.com/python-how-to-make-a-class-iterable-create-iterator-class-for-it/
         for task in self._tl._inner: 
-            self._inner[task.get_key()].glue_to_gui(self._form_layout, len(self._form_layout))
+            if task.is_complete() == False:
+                self._inner[task.get_key()].glue_to_gui(self._form_layout, len(self._form_layout))
         self.show()
         pass
 
@@ -79,10 +79,16 @@ class TasklistGui(QWidget):
             QErrorMessage(self._root).showMessage("A similiar task already exists")
             return
         # find where to insert the task into the tasklistgui's rows
-        for i, task in enumerate(self._tl._inner):
+        index = 0
+        self._group_box.setTitle("My Tasks ("+str(self._tl.get_amt_todo())+")")
+        for task in self._tl._inner:
+            # guaranteed for unique task to return here because we verified no other task
+            # exists that is partially equal to it (see `success` variable in this function)
             if task.partial_eq(t):
-                tg.glue_to_gui(self._form_layout, (i * 4) + 1)
+                tg.glue_to_gui(self._form_layout, (index * 4) + 1)
                 break
+            if task.is_complete() == False:
+                index += 1
         pass
 
 
@@ -115,10 +121,7 @@ class TasklistGui(QWidget):
         # update all the task's with the gui information about status box
         for task in self._tl._inner: 
             task.set_complete(self._inner[task.get_key()].get_status_box().isChecked())
-            if task.is_complete():
-                # :todo: remove from tl
-                pass
-
+        # serialize logic
         return self._tl.to_dict()
     pass
 

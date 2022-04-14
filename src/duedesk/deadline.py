@@ -9,7 +9,6 @@ import unittest
 from datetime import date
 from calendar import monthrange
 
-# :wip:
 class Deadline:
     def __init__(self, year: int, month: int, day: int) -> None:
         '''Creates a new `Deadline` object.'''
@@ -77,7 +76,6 @@ class Deadline:
             self.get_year() != 0
 
 
-    # :todo: test and implement
     def is_overdue(self) -> bool:
         return self.days_out() < 0
 
