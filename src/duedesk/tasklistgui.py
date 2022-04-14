@@ -55,7 +55,7 @@ class TasklistGui(QWidget):
         # note: make `Tasklist` iterable (implement new class and __iter__)
         # https://thispointer.com/python-how-to-make-a-class-iterable-create-iterator-class-for-it/
         for task in self._tl._inner: 
-            self._inner[task.get_key()].glue_to_gui(self._form_layout)
+            self._inner[task.get_key()].glue_to_gui(self._form_layout, len(self._form_layout))
         self.show()
         pass
 
@@ -65,7 +65,10 @@ class TasklistGui(QWidget):
         tg = TaskGui(self._root)
         tg.load(t.to_dict())
         self.add(tg)
-        tg.glue_to_gui(self._form_layout) #currently pastes to bottom, unsorted (Visually), is sorted internally
+        for i, task in enumerate(self._tl._inner):
+            if task.partial_eq(t):
+                tg.glue_to_gui(self._form_layout, i * 4 + 1)
+                break
 
     def add(self, tg: TaskGui) -> bool:
         '''Adds a new `TaskGui` to the list and resorts the list. Returns `false` if a task with the same

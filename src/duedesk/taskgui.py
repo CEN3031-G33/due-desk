@@ -28,14 +28,15 @@ class TaskGui(QWidget):
         pass
 
 
-    def glue_to_gui(self, layout: QFormLayout):
+    def glue_to_gui(self, layout: QFormLayout, row: int):
         '''Adds the appropriate gui elements for this task to the gui. TODO: create one widget that is glued to the gui'''
+
         sublay = QFormLayout()
         sublay.addRow(self._begin_btn, self._status_box)
-        layout.addRow(self._label)
-        layout.addRow(self._deadline_label, sublay)
-        layout.addRow(self._minutes_label)
-        layout.addRow(QLabel('-'*30))
+        layout.insertRow(row, self._label)
+        layout.insertRow(row + 1, self._deadline_label, sublay)
+        layout.insertRow(row + 2, self._minutes_label)
+        layout.insertRow(row + 3, QLabel('-'*30))
         pass
     
     def load(self, data: dict):
