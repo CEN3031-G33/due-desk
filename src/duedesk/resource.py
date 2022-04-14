@@ -70,8 +70,9 @@ class Resource:
     def is_locked(self) -> bool:
         return self._locked
 
-    # :todo: add test
+
     def full_eq(self, other) -> bool:
+        '''Compares filepaths, location, and cost of 2 resources.'''
         return self.partial_eq(other) and \
             self._location == other._location and \
             self._cost == other._cost
@@ -128,6 +129,28 @@ class TestResource(unittest.TestCase):
             "inscene": "False",
             "cost": "3"
         })
+        pass
+    
+    
+    def test_full_eq(self):
+        r0 = Resource("file", (1, 2), True, False, 3)
+        r1 = Resource("file", (1, 2), True, False, 3)
+        self.assertEqual(r0.full_eq(r1), True)
+        # differing filepaths
+        r1 = Resource("file2", (1, 2), True, False, 3)
+        self.assertEqual(r0.full_eq(r1), False)
+        # differing inscene and locked (don't care)
+        r1 = Resource("file", (1, 2), False, True, 3)
+        self.assertEqual(r0.full_eq(r1), True)
+        # differing cost (bad)
+        r1 = Resource("file", (1, 2), True, False, 7)
+        self.assertEqual(r0.full_eq(r1), False)
+        # differing x location (bad)
+        r1 = Resource("file", (9, 2), True, False, 3)
+        self.assertEqual(r0.full_eq(r1), False)
+        # differing y location (bad)
+        r1 = Resource("file", (1, 4), True, False, 3)
+        self.assertEqual(r0.full_eq(r1), False)
         pass
 
       
