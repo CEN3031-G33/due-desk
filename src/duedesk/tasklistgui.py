@@ -25,10 +25,10 @@ class TasklistGui(QWidget):
             if self.add(tg) == False:
                 print('warning: could not add duplicate task \"'+tg.get_task().get_subject()+"\" to list")
             pass
-
         self._form_layout = QFormLayout()
+        # configure the add task button at top of task list
         button = QPushButton("Add Task")
-        button.clicked.connect(self.addTask)
+        button.clicked.connect(self.add_task)
         self._form_layout.addRow(button)
         # configure group box gui element
         self._group_box = QGroupBox("")
@@ -59,16 +59,32 @@ class TasklistGui(QWidget):
         self.show()
         pass
 
-    def addTask(self):
-        subject, deadline = self._root.drawAddTask()
-        t = Task(subject, Deadline.from_str(deadline))
+
+    def add_task(self):
+        '''Adds a new `Task` to the `Tasklist` from the gui.'''
+        subject = self._root.inputTaskSubject()
+        # subject verification failed
+        if subject == None:
+            return
+        deadline = self._root.inputTaskDeadline()
+        # deadline verification failed
+        if str(deadline) == 'None':
+            return
+        t = Task(subject, deadline)
+        # ensure no similiar task exists
         tg = TaskGui(self._root)
         tg.load(t.to_dict())
-        self.add(tg)
+        success = self.add(tg)
+        if success == False:
+            QErrorMessage(self._root).showMessage("A similiar task already exists")
+            return
+        # find where to insert the task into the tasklistgui's rows
         for i, task in enumerate(self._tl._inner):
             if task.partial_eq(t):
-                tg.glue_to_gui(self._form_layout, i * 4 + 1)
+                tg.glue_to_gui(self._form_layout, (i * 4) + 1)
                 break
+        pass
+
 
     def add(self, tg: TaskGui) -> bool:
         '''Adds a new `TaskGui` to the list and resorts the list. Returns `false` if a task with the same

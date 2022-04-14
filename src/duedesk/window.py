@@ -4,6 +4,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 import webbrowser
+from .deadline import Deadline
 from .desk import Desk
 
 root_dir = '.'
@@ -39,10 +40,45 @@ class App(QMainWindow):
         self.setCentralWidget(self.table_widget)
         pass
 
-    def drawAddTask(self):
-        name, done1 = QInputDialog.getText(self, 'Input Dialog', 'Enter Task name:')
-        deadline, done2 = QInputDialog.getText(self, 'Input Dialog', 'Enter Deadline (Format YYYY-MM-DD):')
-        return name, deadline
+
+    def inputTaskSubject(self) -> str: 
+        '''Accepts user input for subject via GUI and validates is acceptable.'''
+        resp, okay = QInputDialog.getText(self, 'Input Dialog', 'Enter Task name:')
+        # make sure user entered input and did not cancel
+        if okay == False:
+            return None
+        # validate subject
+        if len(resp) == 0:
+            QErrorMessage(self).showMessage("subject must contain characters")
+            return None
+        return resp
+
+
+    def inputTaskDeadline(self) -> Deadline:
+        '''Accepts user input for deadline via GUI and validates is acceptable.'''
+        resp, okay = QInputDialog.getText(self, 'Input Dialog', 'Enter Deadline (Format YYYY-MM-DD):')
+        # make sure user entered input and did not cancel
+        if okay == False:
+            return None
+        deadline = Deadline.from_str(resp)
+        # validiate deadline (proper format?)
+        if deadline.is_valid() == False:
+            msg = "invalid date format"
+            if deadline.get_year() == 0:
+                msg = "invalid year field"
+            elif deadline.get_month() == 0:
+                msg = "invalid month field"
+            elif deadline.get_day() == 0:
+                msg = "invalid day field"
+            QErrorMessage(self).showMessage(msg)
+            return None
+        # validate deadline is not overdue
+        elif deadline.is_overdue() == True:
+            QErrorMessage(self).showMessage("deadline has already past")
+            return None
+        # return the accepted deadline
+        return deadline
+
 
     def drawZen(self):
         #this method will take the desk from table widget, resize it, and draw it, in addition to the current task, a back button, and starting a timer
