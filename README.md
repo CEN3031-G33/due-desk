@@ -1,11 +1,19 @@
 # Due Desk 
-# ![desk](./docs/images/superdesk.png)
+# ![desk](./docs/images/deskinaction.png)
 
-## Overview
+## The virtual space that helps you get assignments done in a fun and rewarding way.
 
-The virtual space that helps you get assignments done in a fun and rewarding way.
+# Overview
 
-## Using
+- Automatically keeps your task list up to date maintaining the order by
+earliest deadline first. 
+
+- Gain credits to spend in your custom inventory store to
+create your personal desk layout by logging minutes worked on tasks
+
+- Save and load your tasks and desk layout for the next session.
+
+# Downloading
 
 1. Grab the latest release file. Download it to your local machine.
 
@@ -17,13 +25,13 @@ The virtual space that helps you get assignments done in a fun and rewarding way
 $ pip install .
 ```
 
-4. Verify DueDesk installed properly.
-
+4. To open duedesk, open a terminal and enter:
 ```
 $ duedesk
 ```
 
-## Contributing
+
+# Contributing
 
 1. Clone this repository to your local machine.
 
@@ -55,3 +63,7 @@ $ python -m unittest discover tests -v -p "main.py"
 ```
 $ git checkout -b <name>
 ```
+
+## Image credits
+
+The images presented in the desk layout screenshot are not created by the duedesk team and were shamelessly taken off the internet for demo purposes only.
