@@ -18,6 +18,7 @@ class Desk:
         self._tlg = TasklistGui(self._root, [])
         self._plg = Pool(self._root, [])
         self._ilg = Inventory(self._root, [], self._plg)
+        self._credits = 0
         pass
 
     
@@ -40,12 +41,17 @@ class Desk:
                 # hand off data to desk gui
                 elif key == 'desk':
                     self._plg.load(val)
+                elif key == 'credits':
+                    self._credits = val
             pass              
         self._tlg.glue_to_gui()
         self._ilg.glue_to_gui()
         self._plg.glue_to_gui()
         pass
 
+    def updateCredits(self, amount):
+        self._credits += amount
+        self._root.updateVisualCurrency(self._credits)
 
     def save_to_file(self) -> None:
         '''Saves the desk's current state to the file.'''
@@ -53,6 +59,7 @@ class Desk:
         data['inventory'] = self._ilg.save()
         data['desk'] = self._plg.save()
         data['tasks'] = self._tlg.save()
+        data['credits'] = self._credits
         with open(self._file, 'w') as fp:
             json.dump(data, fp, indent=1)
         pass

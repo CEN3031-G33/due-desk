@@ -59,6 +59,15 @@ class App(QMainWindow):
             return None
         return resp
 
+    def updateDeskCredits(self, amount):
+        self.table_widget._dd.updateCredits(amount)
+
+    def updateVisualCurrency(self, credits):
+        self.table_widget.updateCurrency(credits)
+
+    def getCredits(self):
+        return self.table_widget.getCredits()
+
 
     def inputTaskDeadline(self) -> Deadline:
         '''Accepts user input for deadline via GUI and validates is acceptable.'''
@@ -181,8 +190,17 @@ class MyTableWidget(QWidget):
         trash_widget.resize(int(screen.size().width() * 0.15), int(screen.size().height() * 0.15))
         trash_widget.setPixmap(trash_widget_pixmap.scaled(int(screen.size().width() * 0.15), int(screen.size().height() * 0.15), Qt.KeepAspectRatio, Qt.FastTransformation))
         trash_widget.move(0, int(screen.size().height() * 0.65))
+
+        self._credit_label = QLabel(self)
+        self._credit_label.setText("Credits: " + str(int(self._dd._credits)))
+        self._credit_label.move(2, exit_button.height())
+        self._credit_label.setStyleSheet("font-size: 20px; font-family: Menlo")
         pass
 
+    def updateCurrency(self, credits):
+        self._credit_label.setText("Credits: " + str(int(self._dd._credits)))
+        self._credit_label.adjustSize()
+        pass
 
     def dragEnterEvent(self, event):
         event.accept()
@@ -198,6 +216,7 @@ class MyTableWidget(QWidget):
         # check if contains trash can dimensions to remove it from the desk
         if(trash_rect.contains(position)):
             # print("remove resourcegui object", event.source())
+            self._dd.updateCredits(event.source().get_rg()._resource.get_cost())
             self._dd.get_pool().remove(event.source().get_rg())
             event.source().deleteLater()
         else:
@@ -214,7 +233,9 @@ class MyTableWidget(QWidget):
         p.setColor(self.backgroundRole(), color)
         self.setPalette(p)
         pass
-
+    
+    def getCredits(self):
+        return self._dd._credits
 
     def exitDesk(self):
         '''Close the application and save the desk contents.'''

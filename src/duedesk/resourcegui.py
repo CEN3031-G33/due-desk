@@ -31,7 +31,7 @@ class ResourceGui(QWidget):
         '''Attaches the PyQt5 gui elements to the layout. If `layout` is `None`, the resource is not added to QFormLayout.'''
         if layout == None:
             self._button.clicked.connect(self.move_around_desk) # :todo: maybe remove line?
-            self._button.move(self._resource.get_location()[0], self._resource.get_location()[1])
+            self._button.move(int(self._resource.get_location()[0]), int(self._resource.get_location()[1]))
         else:
             self._button.clicked.connect(self.bring_to_desk)
             layout.addWidget(self._button)
@@ -65,20 +65,24 @@ class ResourceGui(QWidget):
 
     # method bound to clicking the image for `ResourceGui` object in context of inventory
     def bring_to_desk(self):
-        if self.get_resource().is_filepath_valid() == False:
-            print('error: cannot bring item to desk due to invalid filepath ', self.get_resource().get_filepath())
-            return
-        print('info: bringing in inventory item to the desk')
-        # :todo: make a copy/new button onto desk (maybe handled by upper-level glue for resource pool)
-        rg = ResourceGui(self._root, self._pool)
-        rg._resource = self.get_resource()
-        #rg.get_resource().set_inscene(True)
-        rg._button = DragNDropButton(self._root, self)
-        rg.update_icon()
-        rg._button.move(100,260)
-        rg._button.show()
+        if (self._resource.get_cost() < self._root.getCredits()):
+            if self.get_resource().is_filepath_valid() == False:
+                print('error: cannot bring item to desk due to invalid filepath ', self.get_resource().get_filepath())
+                return
+            print('info: bringing in inventory item to the desk')
+            # :todo: make a copy/new button onto desk (maybe handled by upper-level glue for resource pool)
+            rg = ResourceGui(self._root, self._pool)
+            rg._resource = self.get_resource()
+            #rg.get_resource().set_inscene(True)
+            rg._button = DragNDropButton(self._root, self)
+            rg.update_icon()
+            rg._button.move(100,260)
+            rg._button.show()
 
-        self._pool.add(rg)
+            self._root.updateDeskCredits(-1 * self._resource.get_cost())
+            self._pool.add(rg)
+        else:
+            print("info: insufficient credits!")
         pass
 
 

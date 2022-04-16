@@ -14,6 +14,7 @@ class TaskGui(QWidget):
     def __init__(self, root: QMainWindow):
         '''Creates a `TaskGui' instance.'''
         super(QWidget, self).__init__(root)
+        self._root = root
         self._task = Task("sample", Deadline.from_str("2022-01-01"))
         # configure the task's gui label
         self._label = QLabel(self._task.get_subject())
@@ -94,5 +95,6 @@ class TaskGui(QWidget):
             self._minutes_label.setText("Minutes Worked: " + str(round(self._task.get_minutes(),2)))
             self._is_running = False
             self._status_box.setCheckable(True) # allow user to mark as complete
+            self._root.updateDeskCredits(working)
         pass
     pass
