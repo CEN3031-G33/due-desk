@@ -1,19 +1,26 @@
-
+# ------------------------------------------------------------------------------
+# Project  : DueDesk
+# Module   : window
+# Abstract : 
+#   Window is the top-level GUI frame capable of drawing different screens and
+#   menus. It is in charge of creating the top-level glue `Desk` instance.
+# ------------------------------------------------------------------------------
 import os, sys
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 import webbrowser
+from .deadline import Deadline
 from .desk import Desk
 
-root_dir = os.path.realpath(os.path.join(os.path.dirname(__file__), '../..'))
 root_dir = '.'
-desk = []
+util_dir = root_dir + '/resources/util'
+desk_dir = root_dir + '/resources/desk'
 
 class App(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.title = 'Due Deskdue'
+        self.title = 'Due Desk'
         self.left = 0
         self.top = 0
         screen = QApplication.primaryScreen()
@@ -39,10 +46,60 @@ class App(QMainWindow):
         self.setCentralWidget(self.table_widget)
         pass
 
+
+    def inputTaskSubject(self) -> str: 
+        '''Accepts user input for subject via GUI and validates is acceptable.'''
+        resp, okay = QInputDialog.getText(self, 'Input Dialog', 'Enter Task name:')
+        # make sure user entered input and did not cancel
+        if okay == False:
+            return None
+        # validate subject
+        if len(resp) == 0:
+            QErrorMessage(self).showMessage("subject must contain characters")
+            return None
+        return resp
+
+    def updateDeskCredits(self, amount):
+        self.table_widget._dd.updateCredits(amount)
+
+    def updateVisualCurrency(self, credits):
+        self.table_widget.updateCurrency(credits)
+
+    def getCredits(self):
+        return self.table_widget.getCredits()
+
+
+    def inputTaskDeadline(self) -> Deadline:
+        '''Accepts user input for deadline via GUI and validates is acceptable.'''
+        resp, okay = QInputDialog.getText(self, 'Input Dialog', 'Enter Deadline (Format YYYY-MM-DD):')
+        # make sure user entered input and did not cancel
+        if okay == False:
+            return None
+        deadline = Deadline.from_str(resp)
+        # validiate deadline (proper format?)
+        if deadline.is_valid() == False:
+            msg = "invalid date format"
+            if deadline.get_year() == 0:
+                msg = "invalid year field"
+            elif deadline.get_month() == 0:
+                msg = "invalid month field"
+            elif deadline.get_day() == 0:
+                msg = "invalid day field"
+            QErrorMessage(self).showMessage(msg)
+            return None
+        # validate deadline is not overdue
+        elif deadline.is_overdue() == True:
+            QErrorMessage(self).showMessage("deadline has already past")
+            return None
+        # return the accepted deadline
+        return deadline
+
+
     def drawZen(self):
         #this method will take the desk from table widget, resize it, and draw it, in addition to the current task, a back button, and starting a timer
         #disable drag and drop for items
         pass
+
 
 class menuScreen(QWidget):
     def __init__(self, parent):
@@ -53,7 +110,7 @@ class menuScreen(QWidget):
         p.setColor(self.backgroundRole(), color)
         self.setPalette(p)
 
-        img_path = root_dir + "/resources/title.png" 
+        img_path = util_dir+"/title.png" 
         c_pixmap = QPixmap(img_path)
         c = QLabel(self)
         screen = QApplication.primaryScreen()
@@ -79,7 +136,6 @@ class menuScreen(QWidget):
         parent.drawTable()
         return True
 
-
     def help(self):
         webbrowser.open('https://github.com/CEN3031-G33/due-desk')
         return 'https://github.com/CEN3031-G33/due-desk'
@@ -90,7 +146,7 @@ class MyTableWidget(QWidget):
         super(QWidget, self).__init__(parent)
 
         # boot up the due desk!
-        self._dd = Desk('./tests/data.json', parent)
+        self._dd = Desk(root_dir+'/duedesk.json', parent)
         self._dd.load_from_file()
 
         self._parent = parent
@@ -103,7 +159,7 @@ class MyTableWidget(QWidget):
     def __initTable__(self):
         '''Initialize supportive gui elements around the desk.'''
         # desk background image
-        img_path = root_dir + "/resources/emptydesk.png" 
+        img_path = desk_dir+"/emptydesk.png" 
         c_pixmap = QPixmap(img_path)
         c = QLabel(self)
         screen = QApplication.primaryScreen()
@@ -113,7 +169,7 @@ class MyTableWidget(QWidget):
         c.setScaledContents(True)
 
         # background paint color
-        paint_path = root_dir + "/resources/paint-bucket.png"
+        paint_path = util_dir+"/paint-bucket.png"
         paint_icon = QIcon(paint_path)
         paint = QPushButton(self)
         paint.setIcon(paint_icon)
@@ -128,14 +184,23 @@ class MyTableWidget(QWidget):
         exit_button.clicked.connect(self.exitDesk)
 
         # trash can
-        trash_path = root_dir + "/resources/trash.png"
+        trash_path = util_dir+"/trash.png"
         trash_widget = QLabel(self)
         trash_widget_pixmap = QPixmap(trash_path)
         trash_widget.resize(int(screen.size().width() * 0.15), int(screen.size().height() * 0.15))
         trash_widget.setPixmap(trash_widget_pixmap.scaled(int(screen.size().width() * 0.15), int(screen.size().height() * 0.15), Qt.KeepAspectRatio, Qt.FastTransformation))
         trash_widget.move(0, int(screen.size().height() * 0.65))
+
+        self._credit_label = QLabel(self)
+        self._credit_label.setText("Credits: " + str(int(self._dd._credits)))
+        self._credit_label.move(2, exit_button.height())
+        self._credit_label.setStyleSheet("font-size: 20px; font-family: Menlo")
         pass
 
+    def updateCurrency(self, credits):
+        self._credit_label.setText("Credits: " + str(int(self._dd._credits)))
+        self._credit_label.adjustSize()
+        pass
 
     def dragEnterEvent(self, event):
         event.accept()
@@ -150,7 +215,9 @@ class MyTableWidget(QWidget):
         trash_rect = QRect(trash_point, trash_size)
         # check if contains trash can dimensions to remove it from the desk
         if(trash_rect.contains(position)):
-            print("remove resourcegui object", event.source())
+            # print("remove resourcegui object", event.source())
+            self._dd.updateCredits(event.source().get_rg()._resource.get_cost())
+            self._dd.get_pool().remove(event.source().get_rg())
             event.source().deleteLater()
         else:
             event.source().move(position)
@@ -166,7 +233,9 @@ class MyTableWidget(QWidget):
         p.setColor(self.backgroundRole(), color)
         self.setPalette(p)
         pass
-
+    
+    def getCredits(self):
+        return self._dd._credits
 
     def exitDesk(self):
         '''Close the application and save the desk contents.'''

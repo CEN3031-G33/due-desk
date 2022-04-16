@@ -1,9 +1,16 @@
+# ------------------------------------------------------------------------------
+# Project  : DueDesk
+# Module   : resourcepoolgui
+# Abstract : 
+#   Resourcepoolgui's are used to store resources in two areas: desk table 
+#   (pool) and the desk inventory (inventory). Manages Resourcegui objects.
+# -----------------------------------------------------------------------------
 from .resourcegui import ResourceGui
 from typing import List
 from PyQt5.QtWidgets import *
 
-# everything on the desk
 class Pool(QWidget):
+    '''Maintains items currently on the desk table.'''
     def __init__(self, root: QMainWindow, inner: List[ResourceGui]):
         super(QWidget, self).__init__(root)
         self._root = root
@@ -14,30 +21,47 @@ class Pool(QWidget):
     def glue_to_gui(self):
         # place all ResourceGui's in the window
         for rsc in self._inner:
-            #rsc.glue_to_gui()
-            rsc.show()
+            rsc.glue_to_gui(None)
+        pass
+
+
+    def add(self, rg: ResourceGui) -> None:
+        '''Adds a new resource to the desk table.'''
+        self._inner += [rg]
+        pass
+
+
+    def remove(self, rg: ResourceGui) -> None:
+        '''Removes a resource from the desk table using full_eq comparison.'''
+        for item in self._inner:
+            if rg.get_resource().full_eq(item.get_resource()) == True:
+                self._inner.remove(item)
+                break
         pass
 
 
     def load(self, data: dict):
         rsc_pool_list = []
         for v in data.values():
-            rg = ResourceGui(self._root)
-            rg.load(v)
-            rg.get_resource().set_inscene(True)
+            rg = ResourceGui(self._root, self)
+            rg.load(v, True)
             rsc_pool_list += [rg]
 
         self._inner = rsc_pool_list
         pass
 
-    def save(self):
-        print('saving pool')
-        for rg in self._inner:
-            rg.save()
-        pass
+
+    def save(self) -> dict:
+        print('info: saving pool...')
+        data = {}
+        for (i,rg) in enumerate(self._inner):
+            data[str(i)] = rg.save()
+        return data
     pass
-# items available to put on the desk
+
+
 class Inventory(QWidget):
+    '''Maintains items available for the desk table.'''
     def __init__(self, root: QMainWindow, inner: List[ResourceGui], pool: Pool):
         super(QWidget, self).__init__(root)
         self._root = root
@@ -77,29 +101,25 @@ class Inventory(QWidget):
         pass
 
 
-    # handle dups & doesn't care positions
     def load(self, data: dict):
         # set to false for inscene
         rsc_inv_list = []
+        # :todo: handle dups & doesn't care positions
         for v in data.values():
-            rg = ResourceGui(self._root)
-            rg.load(v)
+            rg = ResourceGui(self._root, self._pool) # pool is a list wrapper
+            rg.load(v, False)
             rg.get_resource().set_inscene(False)
             rsc_inv_list += [rg]
 
         self._inner = rsc_inv_list
-
-        # :todo: read from file instead (remove this for-loop)
-        for _ in range(0,50):
-            self._inner += [ResourceGui(self._root, self._pool)]
         pass
 
 
-    # save the resourcegui's as dictionaries from inventory
-    def save(self):
-        print('saving inventory')
-        for rg in self._inner:
-            print(rg.get_resource().get_filepath())
-        pass
+    def save(self) -> dict:
+        '''Saves the Resourcegui's as dictionaries from inventory.'''
+        data = dict()
+        print('info: saving inventory...')
+        for (i,rg) in enumerate(self._inner):
+            data[str(i)] = rg.save()
+        return data
     pass
-

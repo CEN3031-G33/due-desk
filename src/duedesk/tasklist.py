@@ -55,6 +55,14 @@ class Tasklist:
             data[str(t[0])] = t[1].to_dict()
         return data
 
+    
+    def get_amt_todo(self) -> int:
+        '''Returns how many tasks are marked as not complete.'''
+        cnt = 0
+        for t in self._inner:
+            if t.is_complete() == False: cnt += 1
+        return cnt
+
 
     def get_by_index(self, i: int) -> Task:
         '''Access the `Task` at index `i`. Returns `None` if `i` is an invalid index.'''
@@ -91,6 +99,29 @@ class TestTasklist(unittest.TestCase):
         # index out-of-bounds errors
         self.assertTrue(tl.get_by_index(3) == None)
         self.assertTrue(tl.get_by_index(-1) == None)
+        pass
+
+
+    def test_still_todo(self):
+        tl = Tasklist([
+            Task('A', Deadline(2022, 1, 1)),
+            Task('B', Deadline(2022, 1, 2)),
+            Task('C', Deadline(2022, 1, 3)),
+            ])
+        # mark up all tasks as done one by one
+        self.assertEqual(tl.get_amt_todo(), 3)
+        tl.get_by_index(0).set_complete(True)
+        self.assertEqual(tl.get_amt_todo(), 2)
+        tl.get_by_index(1).set_complete(True)
+        self.assertEqual(tl.get_amt_todo(), 1)
+        tl.get_by_index(2).set_complete(True)
+        self.assertEqual(tl.get_amt_todo(), 0)
+        # re-mark task as 'todo'
+        tl.get_by_index(2).set_complete(False)
+        self.assertEqual(tl.get_amt_todo(), 1)
+
+        tl = Tasklist([])
+        self.assertEqual(tl.get_amt_todo(), 0)
         pass
 
 
