@@ -65,7 +65,7 @@ class ResourceGui(QWidget):
 
     # method bound to clicking the image for `ResourceGui` object in context of inventory
     def bring_to_desk(self):
-        if (self._resource.get_cost() < self._root.getCredits()):
+        if (self._resource.get_cost() <= self._root.getCredits()):
             if self.get_resource().is_filepath_valid() == False:
                 print('error: cannot bring item to desk due to invalid filepath ', self.get_resource().get_filepath())
                 return
